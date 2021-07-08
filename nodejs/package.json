@@ -1,0 +1,11 @@
+{
+  "name": "@davidkhala/azure-utils",
+  "version": "0.0.0",
+  "dependencies": {
+    "@azure/identity": "latest",
+    "@azure/keyvault-keys": "latest"
+  },
+  "devDependencies": {
+    "mocha": "latest-6"
+  }
+}
