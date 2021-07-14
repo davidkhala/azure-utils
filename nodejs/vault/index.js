@@ -17,7 +17,7 @@ const KeyType = {
  */
 const EncryptionAlgorithm = {
     'RSA-OAEP': 'RSA-OAEP',
-    "RSA-OAEP-256": 'RSA-OAEP-256',
+    'RSA-OAEP-256': 'RSA-OAEP-256',
     RSA1_5: 'RSA1_5',
     A128GCM: 'A128GCM',
     A192GCM: 'A192GCM',
@@ -58,10 +58,8 @@ class Key {
     }
 
     async asCrypto(keyName) {
-        const {id} = await this.client.getKey(keyName)
-        const cryptoClient = new CryptographyClient(id, this.credential)
-
-        return cryptoClient
+        const key = await this.client.getKey(keyName)
+        return new Cryptography(key, this.credential)
     }
 
 
@@ -107,9 +105,55 @@ class Key {
 
 }
 
+const algorithmMap = {
+    RSA: EncryptionAlgorithm["RSA-OAEP-256"]
+}
+
+class Cryptography {
+    /**
+     *
+     * @param {KeyVaultKey} key
+     * @param credential
+     */
+    constructor(key, credential) {
+        this.client = new CryptographyClient(key, credential)
+        this.key = key
+    }
+
+    /**
+     *
+     * @param {string} plaintext
+     * @param {EncryptionAlgorithm} [algorithm]
+     * @return {Promise<Uint8Array>}
+     */
+    async encrypt(plaintext, algorithm) {
+        if (!algorithm) {
+            algorithm = algorithmMap[this.key.keyType]
+        }
+        const {result} = await this.client.encrypt({algorithm, plaintext: Buffer.from(plaintext)})
+        return result
+    }
+
+    /**
+     *
+     * @param {Uint8Array} ciphertext
+     * @param [algorithm]
+     * @return {Promise<string>}
+     */
+    async decrypt(ciphertext, algorithm) {
+        if (!algorithm) {
+            algorithm = algorithmMap[this.key.keyType]
+        }
+        const {result} = await this.client.decrypt({algorithm, ciphertext})
+        return result.toString()
+    }
+
+}
+
 module.exports = {
     Key,
     KeyType,
     EncryptionAlgorithm,
+    Cryptography
 }
 
