@@ -1,7 +1,9 @@
 const {Key, KeyType} = require('../index')
 const {getConfigFileCredential} = require('../../login')
 const vaultName = 'davidkhala-vault'
+const assert = require('assert')
 const configFileCredential = getConfigFileCredential()
+
 describe('key: EC', () => {
 
     const keyName = 'EC'
@@ -15,6 +17,17 @@ describe('key: EC', () => {
     it('get', async () => {
         const keyInfo = await keyOpt.get(keyName)
         console.log(keyInfo)
+    })
+    it('sign', async function () {
+        this.timeout(0)
+
+        const keyCrypto = await keyOpt.asCrypto(keyName)
+        const message = 'My data'
+
+        const signature = await keyCrypto.sign(message)
+        const expected = 'efbfbd65efbfbd25efbfbdd683efbfbdefbfbd0a7665efbfbd41efbfbd0eefbfbd40efbfbdefbfbd35efbfbdefbfbd7fefbfbd6fefbfbd0fefbfbdefbfbd3defbfbdefbfbd4cefbfbdefbfbd14efbfbdefbfbd6b68efbfbd0f16efbfbd2501efbfbdefbfbd61efbfbd4f34efbfbdefbfbdefbfbdcb9d0cefbfbd0befbfbdefbfbd'
+        // FIXME, why each time we have a different signature result?
+        assert.strictEqual(signature, expected)
     })
     it('delete', async function () {
         this.timeout(400000)

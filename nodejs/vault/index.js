@@ -1,5 +1,5 @@
 const {KeyClient, CryptographyClient} = require("@azure/keyvault-keys");
-
+const {createHash} = require('crypto')
 /**
  * @enum string
  */
@@ -11,6 +11,38 @@ const KeyType = {
     oct: 'oct',// Octet sequence (used to represent symmetric keys)
     'oct-HSM': 'oct-HSM',
 }
+
+const KnownSignatureAlgorithms = {
+    /** RSASSA-PSS using SHA-256 and MGF1 with SHA-256, as described in https://tools.ietf.org/html/rfc7518 */
+    PS256: "PS256",
+    /** RSASSA-PSS using SHA-384 and MGF1 with SHA-384, as described in https://tools.ietf.org/html/rfc7518 */
+    PS384: "PS384",
+    /** RSASSA-PSS using SHA-512 and MGF1 with SHA-512, as described in https://tools.ietf.org/html/rfc7518 */
+    PS512: "PS512",
+    /** RSASSA-PKCS1-v1_5 using SHA-256, as described in https://tools.ietf.org/html/rfc7518 */
+    RS256: "RS256",
+    /** RSASSA-PKCS1-v1_5 using SHA-384, as described in https://tools.ietf.org/html/rfc7518 */
+    RS384: "RS384",
+    /** RSASSA-PKCS1-v1_5 using SHA-512, as described in https://tools.ietf.org/html/rfc7518 */
+    RS512: "RS512",
+    /** ECDSA using P-256 and SHA-256, as described in https://tools.ietf.org/html/rfc7518. */
+    ES256: "ES256",
+    /** ECDSA using P-384 and SHA-384, as described in https://tools.ietf.org/html/rfc7518 */
+    ES384: "ES384",
+    /** ECDSA using P-521 and SHA-512, as described in https://tools.ietf.org/html/rfc7518 */
+    ES512: "ES512",
+    /** ECDSA using P-256K and SHA-256, as described in https://tools.ietf.org/html/rfc7518 */
+    ES256K: "ES256K"
+}
+const SignDataAlgorithms = {
+    PS256: KnownSignatureAlgorithms.PS256,
+    RS256: KnownSignatureAlgorithms.RS256,
+    PS384: KnownSignatureAlgorithms.PS384,
+    RS384: KnownSignatureAlgorithms.RS384,
+    PS512: KnownSignatureAlgorithms.PS512,
+    RS512: KnownSignatureAlgorithms.RS512
+}
+
 /**
  *
  * @enum string
@@ -106,7 +138,8 @@ class Key {
 }
 
 const algorithmMap = {
-    RSA: EncryptionAlgorithm["RSA-OAEP-256"]
+    RSA: EncryptionAlgorithm["RSA-OAEP-256"],
+    EC: KnownSignatureAlgorithms.ES256,
 }
 
 class Cryptography {
@@ -148,12 +181,31 @@ class Cryptography {
         return result.toString()
     }
 
+    async sign(message, algorithm) {
+
+
+        if (!algorithm) {
+            algorithm = algorithmMap[this.key.keyType]
+            if (this.key.keyType === KeyType.EC) {
+                const hash = createHash("sha256");
+
+                const digest = hash.update(message).digest();
+                const {result} = await this.client.sign(algorithm, digest)
+                return result.toString()
+            }
+
+        }
+        const {result} = await this.client.signData(algorithm, Buffer.from(message))
+        return Buffer.from(result).toString('hex')
+    }
 }
 
 module.exports = {
     Key,
     KeyType,
     EncryptionAlgorithm,
-    Cryptography
+    Cryptography,
+    KnownSignatureAlgorithms,
+    SignDataAlgorithms,
 }
 
