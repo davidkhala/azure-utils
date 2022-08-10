@@ -3,7 +3,7 @@ import {createHash} from 'crypto';
 /**
  * @enum string
  */
-const KeyType = {
+export const KeyType = {
 	EC: 'EC',// Elliptic Curve
 	'EC-HSM': 'EC-HSM',
 	RSA: 'RSA',
@@ -12,7 +12,7 @@ const KeyType = {
 	'oct-HSM': 'oct-HSM',
 };
 
-const KnownSignatureAlgorithms = {
+export const KnownSignatureAlgorithms = {
 	/** RSASSA-PSS using SHA-256 and MGF1 with SHA-256, as described in https://tools.ietf.org/html/rfc7518 */
 	PS256: 'PS256',
 	/** RSASSA-PSS using SHA-384 and MGF1 with SHA-384, as described in https://tools.ietf.org/html/rfc7518 */
@@ -36,7 +36,7 @@ const KnownSignatureAlgorithms = {
 	/** ECDSA using P-256K and SHA-256, as described in https://tools.ietf.org/html/rfc7518 */
 	ES256K: 'ES256K'
 };
-const SignDataAlgorithms = {
+export const SignDataAlgorithms = {
 	PS256: KnownSignatureAlgorithms.PS256,
 	RS256: KnownSignatureAlgorithms.RS256,
 	PS384: KnownSignatureAlgorithms.PS384,
@@ -49,7 +49,7 @@ const SignDataAlgorithms = {
  *
  * @enum string
  */
-const EncryptionAlgorithm = {
+export const EncryptionAlgorithm = {
 	'RSA-OAEP': 'RSA-OAEP',
 	'RSA-OAEP-256': 'RSA-OAEP-256',
 	RSA1_5: 'RSA1_5',
@@ -67,7 +67,7 @@ const EncryptionAlgorithm = {
 	A256CBCPAD: 'A256CBCPAD',
 };
 
-class Key {
+export class Key {
 	/**
 	 *
 	 * @param keyVaultName
@@ -144,7 +144,7 @@ const algorithmMap = {
 	EC: KnownSignatureAlgorithms.ES256,
 };
 
-class Cryptography {
+export class Cryptography {
 	/**
 	 *
 	 * @param {KeyVaultKey} key
@@ -216,13 +216,4 @@ class Cryptography {
 		return result;
 	}
 }
-
-module.exports = {
-	Key,
-	KeyType,
-	EncryptionAlgorithm,
-	Cryptography,
-	KnownSignatureAlgorithms,
-	SignDataAlgorithms,
-};
 

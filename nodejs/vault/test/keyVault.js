@@ -1,7 +1,7 @@
 import {Key, KeyType} from '../index.js';
-const {getConfigFileCredential} = require('../../login');
+import {getConfigFileCredential} from '../../login.js';
+import assert from 'assert';
 const vaultName = 'davidkhala-vault';
-const assert = require('assert');
 const configFileCredential = getConfigFileCredential();
 
 describe('key: EC', () => {
