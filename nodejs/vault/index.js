@@ -1,5 +1,5 @@
-const {KeyClient, CryptographyClient} = require('@azure/keyvault-keys');
-const {createHash} = require('crypto');
+import {KeyClient, CryptographyClient} from '@azure/keyvault-keys';
+import {createHash} from 'crypto';
 /**
  * @enum string
  */

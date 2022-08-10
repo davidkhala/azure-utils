@@ -1,4 +1,4 @@
-const {Key, KeyType} = require('../index');
+import {Key, KeyType} from '../index.js';
 const {getConfigFileCredential} = require('../../login');
 const vaultName = 'davidkhala-vault';
 const assert = require('assert');
