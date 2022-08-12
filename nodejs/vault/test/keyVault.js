@@ -1,25 +1,26 @@
 import {Key, KeyType} from '../index.js';
 import {getConfigFileCredential} from '../../login.js';
 import assert from 'assert';
+
 const vaultName = 'davidkhala-vault';
 const configFileCredential = getConfigFileCredential();
 
-describe('key: EC', () => {
+describe('key: EC', function () {
+	this.timeout(0);
 
 	const keyName = 'EC';
 	const keyType = KeyType.EC;
 
 	const keyOpt = new Key(vaultName, configFileCredential);
-	it('create', async function () {
-		this.timeout(40000);
+	it('create', async () => {
+
 		await keyOpt.create(keyName, keyType);
 	});
 	it('get', async () => {
 		const keyInfo = await keyOpt.get(keyName);
 		console.log(keyInfo);
 	});
-	it('sign and verify', async function () {
-		this.timeout(0);
+	it('sign and verify', async () => {
 
 		const keyCrypto = await keyOpt.asCrypto(keyName);
 		const message = 'My data';
@@ -28,14 +29,15 @@ describe('key: EC', () => {
 		const isValid = await keyCrypto.verify(message, signature);
 		assert.ok(isValid);
 	});
-	it('delete', async function () {
-		this.timeout(400000);
+	it('delete', async () => {
+
 		await keyOpt.delete(keyName, {sync: true});
 		await keyOpt.delete(keyName, {force: true});
 	});
 
 });
-describe('key RSA', () => {
+describe('key RSA', function () {
+	this.timeout(0);
 	const keyName = 'RSA';
 	const keyType = KeyType.RSA;
 
@@ -48,16 +50,19 @@ describe('key RSA', () => {
 		console.log(keyInfo);
 	});
 	let cipherResult;
-	it('encrypt', async function () {
-		this.timeout(40000);
+	it('encrypt', async () => {
 		const cryptoOperator = await keyOpt.asCrypto(keyName);
 		cipherResult = await cryptoOperator.encrypt('abc');
 
 	});
-	it('decrypt', async function () {
-		this.timeout(40000);
+	it('decrypt', async () => {
 		const cryptoOperator = await keyOpt.asCrypto(keyName);
 		const result = await cryptoOperator.decrypt(cipherResult);
 		console.debug(result);
+	});
+	it('delete', async () => {
+
+		await keyOpt.delete(keyName, {sync: true});
+		await keyOpt.delete(keyName, {force: true});
 	});
 });

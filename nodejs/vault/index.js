@@ -1,14 +1,16 @@
 import {KeyClient, CryptographyClient} from '@azure/keyvault-keys';
 import {createHash} from 'crypto';
+
+
 /**
  * @enum string
  */
 export const KeyType = {
-	EC: 'EC',// Elliptic Curve
+	EC: 'EC', // Elliptic Curve
 	'EC-HSM': 'EC-HSM',
 	RSA: 'RSA',
 	'RSA-HSM': 'RSA-HSM',
-	oct: 'oct',// Octet sequence (used to represent symmetric keys)
+	oct: 'oct', // Octet sequence (used to represent symmetric keys)
 	'oct-HSM': 'oct-HSM',
 };
 
