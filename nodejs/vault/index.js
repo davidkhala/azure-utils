@@ -1,5 +1,4 @@
 import {KeyClient, CryptographyClient} from '@azure/keyvault-keys';
-import {createHash} from 'crypto';
 
 
 /**
@@ -185,36 +184,22 @@ export class Cryptography {
 		return result.toString();
 	}
 
-	async sign(message, algorithm) {
+	async sign(messageOrDigest, algorithm) {
 
 		if (!algorithm) {
 			algorithm = algorithmMap[this.key.keyType];
 		}
 
-		if (this.key.keyType === KeyType.EC) {
-			const hash = createHash('sha256');
-
-			const digest = hash.update(message).digest();
-			const {result} = await this.client.sign(algorithm, digest);
-			return result;
-		}
-		const {result} = await this.client.signData(algorithm, Uint8Array.from(message));
+		const {result} = await this.client.signData(algorithm, Uint8Array.from(messageOrDigest));
 		return result;
 	}
 
-	async verify(message, signature, algorithm) {
+	async verify(messageOrDigest, signature, algorithm) {
 		if (!algorithm) {
 			algorithm = algorithmMap[this.key.keyType];
 		}
-		if (this.key.keyType === KeyType.EC) {
-			const hash = createHash('sha256');
 
-			const digest = hash.update(message).digest();
-			const {result} = await this.client.verify(algorithm, digest, signature);
-			return result;
-		}
-
-		const {result} = await this.client.verifyData(algorithm, Uint8Array.from(message), Uint8Array.from(signature));
+		const {result} = await this.client.verifyData(algorithm, Uint8Array.from(messageOrDigest), Uint8Array.from(signature));
 		return result;
 	}
 }

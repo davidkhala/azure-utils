@@ -1,6 +1,7 @@
+import assert from 'assert';
+import fs from 'fs';
 import {Key, KeyType} from '../index.js';
 import {getConfigFileCredential} from '../../login.js';
-import assert from 'assert';
 
 const vaultName = 'davidkhala-vault';
 const configFileCredential = getConfigFileCredential();
@@ -26,6 +27,16 @@ describe('key: EC', function () {
 		const message = 'My data';
 
 		const signature = await keyCrypto.sign(message);
+		const isValid = await keyCrypto.verify(message, signature);
+		assert.ok(isValid);
+	});
+	it('sign with oversize payload', async () => {
+		const message = fs.readFileSync('vault/test/artifacts/payload1660145372021');
+		console.log(message.length);
+		const keyCrypto = await keyOpt.asCrypto(keyName);
+
+		const signature = await keyCrypto.sign(message);
+		console.info(signature);
 		const isValid = await keyCrypto.verify(message, signature);
 		assert.ok(isValid);
 	});
