@@ -1,7 +1,7 @@
 setup(){
   az login --use-device-code
 }
-pint(){
+ping(){
   az account list
 }
 $@
