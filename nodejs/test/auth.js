@@ -16,7 +16,7 @@ describe('auth', function () {
 
 	});
 	it('dry-run', async () => {
-		const isAllowed = auth(credentials);
+		const isAllowed = await auth(credentials);
 		console.debug(isAllowed);
 	});
 });

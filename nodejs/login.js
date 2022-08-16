@@ -3,10 +3,12 @@ import {SubscriptionClient} from '@azure/arm-subscriptions';
 
 export const getConfigFileCredential = () => new DefaultAzureCredential();
 
-export const auth = (credential) => {
+export const auth = async (credential) => {
 	const client = new SubscriptionClient(credential);
 	try {
-		client.subscriptions.list();
+		const list = client.subscriptions.list()
+		await list.next()
+		
 		return true;
 	} catch (e) {
 		console.error(e);
