@@ -1,0 +1,10 @@
+{
+  "name": "@davidkhala/azure-vault",
+  "version": "0.0.0",
+  "dependencies": {
+    "@azure/keyvault-keys": "latest"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
