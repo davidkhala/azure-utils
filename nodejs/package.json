@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "@azure/identity": "latest",
-    "@azure/keyvault-keys": "latest"
+    "@azure/arm-subscriptions": "latest"
   },
   "scripts": {
     "test": "mocha test"
