@@ -1,7 +1,7 @@
-setup(){
+setup() {
   az login --use-device-code
 }
-ping(){
+ping() {
   az account list
 }
 $@

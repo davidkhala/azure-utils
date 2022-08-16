@@ -1,0 +1,10 @@
+{
+  "name": "azure-sample",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@azure/identity": "latest",
+    "@azure/arm-subscriptions": "latest",
+    "dotenv": "latest"
+  }
+}
