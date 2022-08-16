@@ -1,4 +1,4 @@
-import {getConfigFileCredential} from '../login.js';
+import {getConfigFileCredential, auth} from '../login.js';
 import {SubscriptionClient} from '@azure/arm-subscriptions';
 
 const credentials = getConfigFileCredential();
@@ -14,5 +14,9 @@ describe('auth', function () {
 		}
 		console.debug(values);
 
+	});
+	it('dry-run', async () => {
+		const isAllowed = auth(credentials);
+		console.debug(isAllowed);
 	});
 });
