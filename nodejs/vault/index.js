@@ -93,7 +93,7 @@ export class Key {
 	}
 
 	async asCrypto(keyName) {
-		const key = await this.client.getKey(keyName);
+		const key = await this.get(keyName);
 		return new Cryptography(key, this.credential);
 	}
 
@@ -119,7 +119,7 @@ export class Key {
 			this.logger.warn(message);
 		};
 		try {
-			const result = await client.getKey(keyName);
+			const result = await this.get(keyName);
 			key = result.key;
 			this.logger.info(key);
 		} catch (e) {
