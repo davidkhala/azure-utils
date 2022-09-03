@@ -1,3 +1,4 @@
+import {all} from '../format.js';
 import {KeyClient, CryptographyClient} from '@azure/keyvault-keys';
 
 
@@ -97,6 +98,12 @@ export class Key {
 		return new Cryptography(key, this.credential);
 	}
 
+	async list() {
+		const {client} = this;
+		const iterator = client.listPropertiesOfKeys();
+		const list = await all(iterator);
+		return list;
+	}
 
 	/**
 	 *

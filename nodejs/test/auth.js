@@ -1,4 +1,5 @@
 import {getConfigFileCredential, auth} from '../login.js';
+import {all} from '../format.js';
 import {SubscriptionClient} from '@azure/arm-subscriptions';
 
 const credentials = getConfigFileCredential();
@@ -8,10 +9,8 @@ describe('auth', function () {
 	it('subscriptions.list', async () => {
 
 		const list = client.subscriptions.list();
-		const values = [];
-		for await (const value of list) {
-			values.push(value);
-		}
+		const values = await all(list);
+
 		console.debug(values);
 
 	});

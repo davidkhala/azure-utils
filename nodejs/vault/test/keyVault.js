@@ -18,6 +18,8 @@ describe('key: EC', function () {
 		await keyOpt.create(keyName, keyType);
 	});
 	it('get', async () => {
+		const list = await keyOpt.list();
+		console.info({list});
 		const keyInfo = await keyOpt.get(keyName);
 		console.log(keyInfo);
 	});
