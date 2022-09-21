@@ -1,21 +1,23 @@
-import {getConfigFileCredential, auth} from '../login.js';
-import {all} from '../format.js';
-import {SubscriptionClient} from '@azure/arm-subscriptions';
+import {getConfigFileCredential} from '../login.js';
+import Subscription from '../subscription.js';
 
 const credentials = getConfigFileCredential();
-const client = new SubscriptionClient(credentials);
 describe('auth', function () {
 	this.timeout(0);
+	const az = new Subscription(credentials);
 	it('subscriptions.list', async () => {
-
-		const list = client.subscriptions.list();
-		const values = await all(list);
-
+		const values = await az.list();
 		console.debug(values);
 
 	});
-	it('dry-run', async () => {
-		const isAllowed = await auth(credentials);
+	it('ping', async () => {
+
+		const isAllowed = await az.ping();
 		console.debug(isAllowed);
+	});
+	it('regions', async () => {
+		await az.ping();
+		const values = await az.regions();
+		console.debug(values);
 	});
 });

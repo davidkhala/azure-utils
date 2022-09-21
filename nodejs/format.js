@@ -1,13 +1,7 @@
-export async function all(list) {
+export async function all(list, callbackFn = (_) => _) {
 	const values = [];
 	for await (const value of list) {
-		values.push(value);
+		values.push(callbackFn(value));
 	}
 	return values;
-}
-
-export class Azure {
-	constructor(credential, logger = console) {
-		Object.assign(this, {logger, credential});
-	}
 }
