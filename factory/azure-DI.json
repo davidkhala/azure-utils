@@ -1,9 +1,0 @@
-{
-	"name": "azure-DI",
-	"location": "eastus",
-	"identity": {
-		"type": "SystemAssigned",
-		"principalId": "f89f70ea-120a-4f34-95b2-11943d9ddafd",
-		"tenantId": "c2a38aca-e9c7-4647-8dcd-9185476159ae"
-	}
-}
