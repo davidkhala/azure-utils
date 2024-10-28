@@ -4,3 +4,9 @@ An Desktop App
 
 [Download](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio)
 
+## import CSV
+Pre-requisite: [extension: SQL Server Import](https://learn.microsoft.com/en-us/azure-data-studio/extensions/sql-server-import-extension)
+
+open the wizard
+- shortcut `Ctrl + I`
+- right click one CONNECTIONS > **Server**> any server connection, select **Import wizard**
