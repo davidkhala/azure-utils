@@ -10,3 +10,7 @@ Pre-requisite: [extension: SQL Server Import](https://learn.microsoft.com/en-us/
 Open the import wizard
 - Shortcut `Ctrl + I`, or 
 - Right click one CONNECTIONS > **Server**> any server connection, select **Import wizard**
+
+
+## table schema
+To change table schema, right click a table in CONNECTIONS view and select **Design**
