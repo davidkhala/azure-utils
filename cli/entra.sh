@@ -7,7 +7,7 @@ create-service-principal() {
     az ad sp create-for-rbac --name $1 --role Contributor --scopes $scopes --query "{appId:appId, password:password}"
 
 }
-delete() {
+delete-service-principal() {
     az ad sp delete --id $1
 }
 
