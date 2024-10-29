@@ -4,7 +4,7 @@ create-service-principal() {
     scopes="$scopes/resourceGroups/$rg"
   fi
 
-  az ad sp create-for-rbac --name $1 --role Contributor --scopes $scopes --query ".{appId:appId, password:password}"
+  az ad sp create-for-rbac --name $1 --role Contributor --scopes $scopes --query "{appId:appId, password:password}"
 
 }
 $@
