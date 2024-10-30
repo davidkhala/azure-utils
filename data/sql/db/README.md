@@ -1,5 +1,7 @@
 # Azure SQL Database
 
+- [Move across regions](https://learn.microsoft.com/en-us/azure/resource-mover/tutorial-move-region-sql#assign-a-target-sql-server)
+
 ## Access
 
 ### Network
