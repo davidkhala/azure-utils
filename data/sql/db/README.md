@@ -10,3 +10,5 @@ in SQL server layer, left panal > Security > Networking
    - Alternatively, you can add a special firewall rules to do that
    - **Start IPv4 address**: 0.0.0.0
    - **End IPv4 address**: 255.255.255.255
+
+## SQL elastic pool
