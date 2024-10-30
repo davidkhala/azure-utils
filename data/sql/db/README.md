@@ -5,7 +5,7 @@
 - [Move across regions](https://learn.microsoft.com/en-us/azure/resource-mover/tutorial-move-region-sql#move-sql-server)
 - [Copy](https://learn.microsoft.com/en-us/azure/azure-sql/database/database-copy?view=azuresql&tabs=azure-powershell) can duplicate current status to another region
 - `Data management > Replicas`
-  - Not available for always-free
+  - Not available for free tier
 ## Access
 
 ### Network
