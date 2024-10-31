@@ -1,13 +1,13 @@
 context() {
   az account show $@
 }
-tenant(){
+tenant() {
   context --query tenantId --output tsv
 }
-whoami(){
+whoami() {
   context --query user.name --output tsv
 }
-subscription(){
+subscription() {
   context --query id --output tsv
 }
 
