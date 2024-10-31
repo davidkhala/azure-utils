@@ -6,10 +6,9 @@ install() {
 }
 desc() {
   local tenantId=$(az account show --query tenantId --output tsv)
-  az purview default-account show --scope-type "Tenant" --scope-tenant-id $tenantId
+  az purview default-account show --scope-type "Tenant" --scope-tenant-id $tenantId $@
 }
-name(){
+name() {
   desc --query accountName --output tsv
 }
 $@
-
