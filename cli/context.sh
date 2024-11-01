@@ -10,5 +10,8 @@ whoami() {
 subscription() {
   context --query id --output tsv
 }
+get-access-token() {
+  az account get-access-token --resource https://management.core.windows.net/ -o tsv --query accessToken $@
+}
 
 $@
