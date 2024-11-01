@@ -1,4 +1,7 @@
 
+You cannot move Azure Databricks across Resource Group
+> Resource move is not supported for resource types 'Microsoft.Databricks/workspaces'
+
 # Cluster
 
 Cluster Mode：集群的模式共有三种，High concurrency（高并发）、Standard（标准，推荐模式）和Single Node（单节点）
