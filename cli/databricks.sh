@@ -1,3 +1,4 @@
+set -e
 echo y | az databricks -h >/dev/null
 
 show() {
@@ -11,6 +12,12 @@ create() {
 }
 get-access-token() {
     az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d -o tsv --query accessToken $@
+}
+login() {
+    local workspace_name=${1:-$workspace_name}
+    local global_adb_token=$(get-access-token)
+    local adb_ws_url=$(az databricks workspace show --resource-group $rg --name $workspace_name --query workspaceUrl -o tsv)
+    curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/setup.sh | bash -s login $adb_ws_url $global_adb_token
 }
 
 $@
