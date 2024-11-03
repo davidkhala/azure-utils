@@ -15,6 +15,14 @@ get-access-token() {
 }
 login() {
     local workspace_name=${1:-$workspace_name}
+    if [[ -z $workspace_name ]]; then
+        echo missing workspace_name
+        exit 1
+    fi
+    if [[ -z $rg ]]; then
+        echo "missing rg (resource group)"
+        exit 1
+    fi
     local global_adb_token=$(get-access-token)
     local adb_ws_url=$(az databricks workspace show --resource-group $rg --name $workspace_name --query workspaceUrl -o tsv)
     curl -s https://raw.githubusercontent.com/davidkhala/spark/refs/heads/main/databricks/cli/setup.sh | bash -s login $adb_ws_url $global_adb_token

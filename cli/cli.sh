@@ -1,4 +1,4 @@
-setup() {
+login() {
   az login --use-device-code
 }
 
