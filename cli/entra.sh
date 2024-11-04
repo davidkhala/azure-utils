@@ -1,3 +1,4 @@
+set -e
 create-service-principal() {
     local scopes="/subscriptions/$subscription"
     if [[ -n $rg ]]; then
