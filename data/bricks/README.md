@@ -1,4 +1,5 @@
 [Acount Console](https://accounts.azuredatabricks.net)
+- [Catalog admin page](https://accounts.azuredatabricks.net/data)
 - The Entra ID signed in must has `Global Administrator` role, to have access more than just go to workspace.
 
 You cannot move Azure Databricks across Resource Group
