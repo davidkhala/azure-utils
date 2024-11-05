@@ -1,5 +1,5 @@
 set -e
-create-service-principal() {
+create() {
     local scopes="/subscriptions/$subscription"
     if [[ -n $rg ]]; then
         scopes="$scopes/resourceGroups/$rg"
@@ -7,13 +7,18 @@ create-service-principal() {
 
     az ad sp create-for-rbac --name $1 --role Contributor --scopes $scopes
 }
-service-principal-secret-list(){
+list-secret() {
     local appId=$1 # aka. Application (client) ID. The id of service principal
     az ad app credential list --id $appId
-    
+
 }
-delete-service-principal() {
+delete() {
     az ad sp delete --id $1
 }
-
+list-managed-identity() {
+    az ad sp list --all --filter "servicePrincipalType eq 'ManagedIdentity'"
+}
+show() {
+    az ad sp list --display-name $1 $@
+}
 $@
