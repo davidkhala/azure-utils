@@ -19,6 +19,8 @@ list-managed-identity() {
     az ad sp list --all --filter "servicePrincipalType eq 'ManagedIdentity'"
 }
 show() {
-    az ad sp list --display-name $1 $@
+    local name=$1
+    shift 1
+    az ad sp list --display-name $name $@
 }
 $@
