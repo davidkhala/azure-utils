@@ -1,6 +1,7 @@
 # [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/)
 An Desktop App
 - as a customized version of VS Code
+- less advanced than SSMS
 
 [Download](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio)
 
