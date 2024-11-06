@@ -21,10 +21,15 @@ in SQL server layer, left panal > Security > Networking
 
 
 ## Troubleshoot
-**`Failed to execute query. Error: Cannot drop the credential ... because it is being used.` happened when `DROP DATABASE SCOPED CREDENTIAL "..."`**
+**Seen `Failed to execute query. Error: Cannot drop the credential ... because it is being used.` when execute `DROP DATABASE SCOPED CREDENTIAL "..."`**
+
 It will happen when you 
 1. create a Geo Replica active-standby cluster
 2. connect with Purview SAMI with the primary
-3. stop replica and terimiante the standby db
-4. terminate the purview instance
-- We should clean up the credential before step 3. 
+3. switchover the cluster
+4. stop replica and terimiante the standby db
+5. terminate the purview instance
+
+We should clean up the credential before step 4 
+
+Solution: 
