@@ -33,8 +33,8 @@ It will happen when you
 We should clean up the credential before step 4 
 
 Solution: Powered by SSMS
-0. Install SSMS and connect to the target database
-1. In *Object Explorer*, Open *Databases* > [database name] > *Extended Events* > *Sessions*
-2. Stop the session
+1. Install SSMS and connect to the target database
+2. In *Object Explorer*, Open *Databases* > [database name] > *Extended Events* > *Sessions*
+3. Stop the session
 
 
