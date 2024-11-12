@@ -4,6 +4,10 @@
   "dependencies": {
     "@azure/keyvault-keys": "latest"
   },
+  "devDependencies": {
+    "mocha": "latest",
+    "@davidkhala/azure": "latest"
+  },
   "publishConfig": {
     "access": "public"
   },

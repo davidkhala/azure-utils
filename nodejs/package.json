@@ -1,6 +1,6 @@
 {
-  "name": "@davidkhala/azure-format",
-  "version": "0.0.0-alpha.0",
+  "name": "@davidkhala/azure",
+  "version": "0.0.0",
   "dependencies": {
     "@azure/identity": "latest",
     "@azure/arm-subscriptions": "latest"

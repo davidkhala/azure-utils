@@ -1,7 +1,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import {Key, KeyType} from '../index.js';
-import {getConfigFileCredential} from '../../login.js';
+import {getConfigFileCredential} from '@davidkhala/azure/login.js';
 
 const vaultName = 'davidkhala-vault';
 const configFileCredential = getConfigFileCredential();
