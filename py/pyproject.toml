@@ -7,12 +7,11 @@ readme = "README.md"
 packages = [{ include = "auth" }]
 
 [tool.poetry.dependencies]
-azure-identity = "^3.11"
+azure-identity = ">=1"
 requests = ">=2"
-python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest=">=7"
+pytest=">=8"
 
 
 [build-system]
