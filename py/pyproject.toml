@@ -11,7 +11,7 @@ azure-identity = ">=1"
 requests = ">=2"
 
 [tool.poetry.group.dev.dependencies]
-pytest=">=8"
+pytest = { version = ">=8", python = ">=3.8" }
 
 
 [build-system]
