@@ -31,8 +31,6 @@ export default class Subscription {
 
 	async list() {
 		const iterator = this.client.subscriptions.list();
-		const values = await all(iterator);
-
-		return values;
+		return await all(iterator);
 	}
 }
