@@ -1,7 +1,7 @@
-import {getConfigFileCredential} from '../login.js';
+import {getCredential} from '../login.js';
 import Subscription from '../subscription.js';
 
-const credentials = getConfigFileCredential();
+const credentials = getCredential();
 describe('subscriptions', function () {
     this.timeout(0);
     const az = new Subscription(credentials);

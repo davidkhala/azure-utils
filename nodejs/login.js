@@ -1,3 +1,3 @@
 import {DefaultAzureCredential} from '@azure/identity';
 
-export const getConfigFileCredential = () => new DefaultAzureCredential();
+export const getCredential = () => new DefaultAzureCredential();
