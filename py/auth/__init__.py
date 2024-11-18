@@ -1,4 +1,5 @@
 from azure.identity import DefaultAzureCredential
 
-# Initialize the client
-credential = DefaultAzureCredential()
+
+def get_credential() -> DefaultAzureCredential:
+    return DefaultAzureCredential()

@@ -4,7 +4,7 @@
 
 ## Install
 
-### Requiments of Linux Agent
+### Requirements of Linux Agent
 Supported Linux Distros
 - CoreOS
 - Red Hat Enterprise Linux 6.7+
