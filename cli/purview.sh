@@ -1,9 +1,5 @@
-# install extension
-install() {
-  az config set extension.dynamic_install_allow_preview=true
-  az upgrade
-  echo y | az purview -h
-}
+set -e
+echo y | az purview -h >/dev/null
 desc() {
   local tenantId=$(az account show --query tenantId --output tsv)
   az purview default-account show --scope-type "Tenant" --scope-tenant-id $tenantId $@
