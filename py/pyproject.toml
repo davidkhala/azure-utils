@@ -7,10 +7,11 @@ readme = "README.md"
 packages = [{ include = "auth" }]
 
 [tool.poetry.dependencies]
+python=">=3.8"
 azure-identity = "*"
 
 [tool.poetry.group.dev.dependencies]
-pytest = { version = "*", python = ">=3.8" }
+pytest = "*"
 
 
 [build-system]
