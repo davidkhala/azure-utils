@@ -8,13 +8,14 @@ You cannot move Azure Databricks across Resource Group
 # Cluster
 
 
+## job compute
 
-# Workload
-Azure Databricks的工作负载(workload)分为两个类型
-## data engineering (job)
-
-## enhanced data analytics (all-purpose)
+## All-purpose compute
 交互式工作负载通常在Azure Databricks notebook中运行命令
+- no serverless support
+
+## SQL Warehouses
+> Azure Databricks only supports serverless compute in SQL Warehouses
 
 # Managed Resource Group
 [Managed resource group is a special Azure Resource Group that holds ancillary resources created by Azure Synapse Analytics/Azure Databricks for your workspace.](https://learn.microsoft.com/en-us/answers/questions/762405/synapseworkspace-managedrg-and-databricks-rg)
