@@ -6,16 +6,15 @@ You cannot move Azure Databricks across Resource Group
 > Resource move is not supported for resource types 'Microsoft.Databricks/workspaces'
 
 # Cluster
-
+[serverless compute beyond SQL warehouse](https://github.com/davidkhala/spark/blob/main/databricks/compute/serverless.md) is disabled by default
 
 ## job compute
 
 ## All-purpose compute
 交互式工作负载通常在Azure Databricks notebook中运行命令
-- no serverless support
 
 ## SQL Warehouses
-> Azure Databricks only supports serverless compute in SQL Warehouses
+
 
 # Managed Resource Group
 [Managed resource group is a special Azure Resource Group that holds ancillary resources created by Azure Synapse Analytics/Azure Databricks for your workspace.](https://learn.microsoft.com/en-us/answers/questions/762405/synapseworkspace-managedrg-and-databricks-rg)
