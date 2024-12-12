@@ -6,3 +6,4 @@ aka. Azure SQL Data Warehouse
   - It does not support *foreign key*
   - `PRIMARY KEY` is only supported when `NONCLUSTERED` and `NOT ENFORCED` are both used.
   - `UNIQUE` constraint is only supported when `NOT ENFORCED` is used.
+- use a MPP architecture
