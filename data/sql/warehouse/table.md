@@ -17,9 +17,13 @@ https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schem
   - Use case:
     - No obvious joining key or candidate distribution columns for adopting hash table
     - a temporary staging table
-
 - replicated: for small dimension table
 ## Design distribution columns in hash table
 - select up to 8 columns
-- Once setup, you cannot change it
+- Once setup, you cannot change it (e.g. to resolve data skew)
   - Solution: use CREATE TABLE AS SELECT (CTAS) to re-create the table with the updated distribution hash key.
+- [detect data skew](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute#determine-if-the-table-has-data-skew)
+- In joining these columns, to avoid data movement
+  - The data types of the join columns must match
+  - joined with `=` (equals operator)
+  - cannot be a `CROSS JOIN`.
