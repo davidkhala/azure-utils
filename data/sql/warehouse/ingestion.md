@@ -5,5 +5,5 @@
 - Tools
   - classic and popular SQL Server options: `bcp` and `SqlBulkCopy` API
   - Recommended (fastest and most scalable) :
-    -  PolyBase external tables
+    -  [PolyBase external tables](https://github.com/davidkhala/database/blob/main/mssql/polybase.md)
     -  `COPY` statement.
