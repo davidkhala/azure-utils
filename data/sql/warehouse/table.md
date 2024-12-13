@@ -27,3 +27,6 @@ https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schem
   - The data types of the join columns must match
   - joined with `=` (equals operator)
   - cannot be a `CROSS JOIN`.
+
+# External Table
+- `ALTER` statement is not allowed on external tables
