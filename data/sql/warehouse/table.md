@@ -8,7 +8,7 @@
 [Dedicated SQL pool supports three methods for distributing data](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute#what-is-a-distributed-table):
 - hash
   - improves query performance (by minimize data movement during queries)
-  - Design required: Choosing a good distribution columns (as partition columns)
+  - Design required: Choosing a good distribution columns
   - more data skew
   - Use case: for large  (>2GB) fact tables with heavy write (insert, update and delete) operations
 - round-robin: the default method
@@ -29,6 +29,7 @@
   - The data types of the join columns must match
   - joined with `=` (equals operator)
   - cannot be a `CROSS JOIN`.
-
+- Partitioning and Distributing are different concepts
+  - TODO how to select distribution columns?? I lost it somewhere
 # External Table
 - `ALTER` statement is not allowed on external tables
