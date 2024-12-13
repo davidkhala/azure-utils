@@ -1,5 +1,7 @@
-# star schema design
-https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/3-create-tables
+# Design tables
+[Overview](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-overview)
+- [star schema design](https://learn.microsoft.com/en-us/training/modules/design-multidimensional-schema-to-optimize-analytical-workloads/3-create-tables)
+
 
 
 # distributed tables
