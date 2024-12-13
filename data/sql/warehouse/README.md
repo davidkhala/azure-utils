@@ -7,7 +7,7 @@ aka. [Azure SQL Data Warehouse](https://azure.microsoft.com/en-us/blog/azure-sql
 > Not all features of the dedicated SQL pool (new provision) in Azure Synapse workspaces apply to dedicated SQL pool (formerly SQL DW), and vice versa
 - They are same only when Azure Synapse workspaces is provisioned by `Migration of a dedicated SQL pool (formerly SQL DW)`
 ### dedicated SQL pools (formerly SQL DW)
-> Circa 2016, Microsoft adapted its massively parallel processing (MPP) on-premises appliance to the cloud as "Azure SQL Data Warehouse" or "SQL DW" for short.
+> Circa 2016, Microsoft adapted its massively parallel processing (MPP) on-premises appliance to the cloud as "Azure SQL Data Warehouse".
 - "SQL DW" is short for "Azure SQL Data Warehouse"
 - "SQL DW" adopted the constructs of Azure SQL DB such as a logical server. "SQL DW" could exist on the same server as other SQL DBs.
   - made it easy for current Azure SQL DBA to apply the same concepts to data warehouse.
