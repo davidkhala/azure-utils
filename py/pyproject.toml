@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "@davidkhala/azure-utils"
 authors = ["David Liu <david-khala@hotmail.com>"]
 readme = "README.md"
-packages = [{ include = "auth" }]
+packages = [{ include = "davidkhala" }]
 
 [tool.poetry.dependencies]
 python=">=3.8"
