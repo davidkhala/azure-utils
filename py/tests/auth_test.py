@@ -17,11 +17,12 @@ class CredentialsCase(unittest.TestCase):
 
     def test_from_env(self):
         # TODO get credentials from token
-        from_service_principal(
+        ci= from_service_principal(
             tenant_id='54b02cc9-5a7b-42a5-9476-a4f0d3ab0460',
-            client_id='3fc7b4b0-def4-470c-a27a-8cddb4e0639f',
-            client_secret='client_secret',
+            client_id='4733fc19-291e-46b3-942d-06de7c26f7c8',
+            client_secret='',
         )
+
 
 
 if __name__ == '__main__':

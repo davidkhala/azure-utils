@@ -3,13 +3,15 @@
 from azure.identity import (
     DefaultAzureCredential, AzureCliCredential,
     EnvironmentCredential, ManagedIdentityCredential, SharedTokenCacheCredential,
-    AzurePowerShellCredential, AzureDeveloperCliCredential, ClientSecretCredential
+    AzurePowerShellCredential, AzureDeveloperCliCredential, ClientSecretCredential,
 )
+
+from davidkhala.azure import TokenCredential
 
 DefaultCredentialType = EnvironmentCredential | ManagedIdentityCredential | SharedTokenCacheCredential | AzureCliCredential | AzurePowerShellCredential | AzureDeveloperCliCredential
 cli = lambda: AzureCliCredential()
 default = lambda: DefaultAzureCredential()
 
 
-def from_service_principal(tenant_id: str, client_id: str, client_secret: str):
-    return ClientSecretCredential(tenant_id, client_id, client_secret)
+def from_service_principal(tenant_id: str, client_id: str, client_secret: str) -> TokenCredential:
+    return TokenCredential(ClientSecretCredential(tenant_id, client_id, client_secret))
