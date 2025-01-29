@@ -1,4 +1,4 @@
-from typing import Optional, Any, override
+from typing import Optional, Any
 
 from azure.core.credentials import TokenCredential as AzTokenCredential, AccessToken
 from azure.identity._internal.get_token_mixin import GetTokenMixin
@@ -16,7 +16,8 @@ class TokenCredential(AzTokenCredential):
             enable_cae: bool = False,
             **kwargs: Any,
     ) -> AccessToken:
-        # TODO Type of 'get_token' is incompatible with 'TokenCredential'
+        if not scopes:
+            scopes = ['https://graph.microsoft.com/.default']
         return self.credential.get_token(
             *scopes,
             claims=claims, tenant_id=tenant_id, enable_cae=enable_cae,
