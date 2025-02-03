@@ -14,28 +14,27 @@ class CredentialsCase(unittest.TestCase):
         for i, credential in enumerate(d.credentials):
             self.assertIsInstance(credential, expected_type)
             self.assertIsInstance(credential, TokenCredential)
-            if i==0:
+            if i == 0:
                 self.assertIsInstance(credential, EnvironmentCredential)
-            elif i==1:
+            elif i == 1:
                 self.assertIsInstance(credential, ManagedIdentityCredential)
-            elif i==2:
+            elif i == 2:
                 self.assertIsInstance(credential, SharedTokenCacheCredential)
-            elif i==3:
+            elif i == 3:
                 self.assertIsInstance(credential, AzureCliCredential)
-            elif i==4:
+            elif i == 4:
                 self.assertIsInstance(credential, AzurePowerShellCredential)
-            elif i==5:
+            elif i == 5:
                 self.assertIsInstance(credential, AzureDeveloperCliCredential)
 
     def test_from_env(self):
-        ci= from_service_principal(
-            tenant_id='c2a38aca-e9c7-4647-8dcd-9185476159ae',
-            client_id='fa318cde-43db-40a5-a372-5159113bf7d8',
+        ci = from_service_principal(
+            tenant_id=os.environ.get('TENANT_ID'),
+            client_id=os.environ.get('CLIENT_ID'),
             client_secret=os.environ.get('CLIENT_SECRET'),
         )
         # validate
         ci.get_token()
-
 
 
 if __name__ == '__main__':

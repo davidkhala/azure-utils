@@ -16,3 +16,5 @@ jobs:
         tests: py/tests
       env:
         CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+        CLIENT_ID: ${{vars.CLIENT_ID}}
+        TENANT_ID: ${{vars.TENANT_ID}}
