@@ -1,9 +1,12 @@
 import os
 
+from azure.core.credentials import TokenCredential
+from azure.identity import DefaultAzureCredential
+
 from davidkhala.azure.auth import from_service_principal, default
 
 
-def credentials():
+def credentials() -> TokenCredential | DefaultAzureCredential:
     client_secret = os.environ.get('CLIENT_SECRET'),
     if client_secret:
         return from_service_principal(
