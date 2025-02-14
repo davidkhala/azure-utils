@@ -5,6 +5,7 @@ from azure.identity import ManagedIdentityCredential, SharedTokenCacheCredential
     EnvironmentCredential, AzurePowerShellCredential, AzureDeveloperCliCredential
 
 from davidkhala.azure.auth import default, from_service_principal
+from davidkhala.azure.ci import credentials
 
 
 class CredentialsCase(unittest.TestCase):
@@ -14,27 +15,24 @@ class CredentialsCase(unittest.TestCase):
         for i, credential in enumerate(d.credentials):
             self.assertIsInstance(credential, expected_type)
             self.assertIsInstance(credential, TokenCredential)
-            if i == 0:
-                self.assertIsInstance(credential, EnvironmentCredential)
-            elif i == 1:
-                self.assertIsInstance(credential, ManagedIdentityCredential)
-            elif i == 2:
-                self.assertIsInstance(credential, SharedTokenCacheCredential)
-            elif i == 3:
-                self.assertIsInstance(credential, AzureCliCredential)
-            elif i == 4:
-                self.assertIsInstance(credential, AzurePowerShellCredential)
-            elif i == 5:
-                self.assertIsInstance(credential, AzureDeveloperCliCredential)
+            match i:
+                case 0:
+                    self.assertIsInstance(credential, EnvironmentCredential)
+                case 1:
+                    self.assertIsInstance(credential, ManagedIdentityCredential)
+                case 2:
+                    self.assertIsInstance(credential, SharedTokenCacheCredential)
+                case 3:
+                    self.assertIsInstance(credential, AzureCliCredential)
+                case 4:
+                    self.assertIsInstance(credential, AzurePowerShellCredential)
+                case 5:
+                    self.assertIsInstance(credential, AzureDeveloperCliCredential)
 
     def test_from_env(self):
-        ci = from_service_principal(
-            tenant_id=os.environ.get('TENANT_ID'),
-            client_id=os.environ.get('CLIENT_ID'),
-            client_secret=os.environ.get('CLIENT_SECRET'),
-        )
+        auth = credentials()
         # validate
-        ci.get_token()
+        auth.get_token()
 
 
 if __name__ == '__main__':
