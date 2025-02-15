@@ -1,10 +1,11 @@
-import os
 import unittest
+
 from azure.core.credentials import TokenCredential
 from azure.identity import ManagedIdentityCredential, SharedTokenCacheCredential, AzureCliCredential, \
     EnvironmentCredential, AzurePowerShellCredential, AzureDeveloperCliCredential
 
-from davidkhala.azure.auth import default, from_service_principal
+from davidkhala.azure import default_scopes
+from davidkhala.azure.auth import default
 from davidkhala.azure.ci import credentials
 
 
@@ -32,7 +33,7 @@ class CredentialsCase(unittest.TestCase):
     def test_from_env(self):
         auth = credentials()
         # validate
-        auth.get_token()
+        auth.get_token(*default_scopes)
 
 
 if __name__ == '__main__':

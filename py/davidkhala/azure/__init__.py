@@ -3,6 +3,8 @@ from typing import Optional, Any
 from azure.core.credentials import TokenCredential as AzTokenCredential, AccessToken
 from azure.identity._internal.get_token_mixin import GetTokenMixin
 
+default_scopes = ['https://graph.microsoft.com/.default']
+
 
 class TokenCredential(AzTokenCredential):
     def __init__(self, credential: GetTokenMixin):
@@ -17,8 +19,12 @@ class TokenCredential(AzTokenCredential):
             **kwargs: Any,
     ) -> AccessToken:
         if not scopes:
-            scopes = ['https://graph.microsoft.com/.default']
+            scopes = default_scopes
         return self.credential.get_token(
             *scopes,
             claims=claims, tenant_id=tenant_id, enable_cae=enable_cae,
             **kwargs)
+
+    def __getattr__(self, item):
+        # Delegate unknown attributes/methods to the wrapped instance
+        return getattr(self.credential, item)
