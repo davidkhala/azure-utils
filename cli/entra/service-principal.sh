@@ -21,6 +21,6 @@ list-managed-identity() {
 show() {
     local name=$1
     shift 1
-    az ad sp list --display-name $name $@
+    az ad sp list --display-name $name "$@"
 }
-$@
+"$@"

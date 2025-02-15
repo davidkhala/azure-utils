@@ -7,4 +7,4 @@ regions() {
   az account list-locations --query "[].{DisplayName:displayName, Name:name}"
 }
 
-$@
+"$@"

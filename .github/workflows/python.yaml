@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['3.10', 'latest']
+        version: [ '3.10', 'latest' ]
     steps:
-    - uses: actions/checkout@main
-    - uses: davidkhala/poetry-buildpack@main
-      with:
-        working-directory: py
-        test-entry-point: pytest
-        tests: py/tests
-        version: ${{matrix.version}}
-      env:
-        CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
-        CLIENT_ID: ${{vars.CLIENT_ID}}
-        TENANT_ID: ${{vars.TENANT_ID}}
+      - uses: actions/checkout@main
+      - uses: davidkhala/poetry-buildpack@main
+        with:
+          working-directory: py
+          test-entry-point: pytest
+          tests: py/tests
+          version: ${{matrix.version}}
+        env:
+          CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+          CLIENT_ID: ${{vars.CLIENT_ID}}
+          TENANT_ID: ${{vars.TENANT_ID}}
