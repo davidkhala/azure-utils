@@ -9,10 +9,12 @@ packages = [{ include = "davidkhala" }]
 [tool.poetry.dependencies]
 python = "^3.10"
 azure-identity = "*"
+azure-monitor-ingestion = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
-
+[tool.poetry.extras]
+log = ["azure-monitor-ingestion"]
 
 [build-system]
 requires = ["poetry-core"]
