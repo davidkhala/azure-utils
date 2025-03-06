@@ -3,7 +3,7 @@ import unittest
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
 from davidkhala.azure.auth import default
-from davidkhala.azure.log import Management, Ingestion, DCR
+from davidkhala.azure.monitor import Management, Ingestion, DCR
 
 credential = default()
 subscription_id = "3fc7b4b0-def4-470c-a27a-8cddb4e0639f"
@@ -12,25 +12,31 @@ management = Management(credential, subscription_id)
 
 
 class LogAnalyticsTestCase(unittest.TestCase):
-    workspace = management.log_analytics
+    workspace = management.workspace
     name = 'workspace'
+
     def test_workspace_list(self):
         for w in self.workspace.list():
             print(w)
 
     def test_workspace_create(self):
-
         r = self.workspace.create(rg, self.name)
-
 
     def test_dcr_populate(self):
         r = self.workspace.get(rg, self.name)
         dcr = r.default_dcr(management.client)
 
         # Permission denied on managed DCR
+
+    def test_dcr_create(self):
+        r = self.workspace.get(rg, self.name)
+        schema = {
+            'batch_id': KnownColumnDefinitionType.INT
+        }
+        r.create_dcr(management.client, 'dcr', schema, 'dce')
+
     def test_workspace_delete(self):
         self.workspace.delete(rg, self.name)
-
 
 
 class IngestionTestCase(unittest.TestCase):
