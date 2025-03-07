@@ -11,11 +11,12 @@ python = "^3.10"
 azure-identity = "*"
 azure-monitor-ingestion = { version = "*", optional = true }
 azure-mgmt-monitor = { version = "*", optional = true }
+azure-mgmt-loganalytics = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 [tool.poetry.extras]
-log = ["azure-monitor-ingestion", "azure-mgmt-monitor"]
+log = ["azure-monitor-ingestion", "azure-mgmt-monitor", "azure-mgmt-loganalytics"]
 
 [build-system]
 requires = ["poetry-core"]
