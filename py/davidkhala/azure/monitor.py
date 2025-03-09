@@ -8,7 +8,8 @@ from azure.mgmt.monitor.v2021_06_03_preview.models import AzureMonitorWorkspaceR
 from azure.mgmt.monitor.v2021_06_03_preview.operations import AzureMonitorWorkspacesOperations
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType, StreamDeclaration, \
     DataCollectionRuleResource, DataCollectionRuleDestinations, ColumnDefinition, DataFlow, \
-    DataCollectionEndpointResource, DataCollectionEndpointNetworkAcls, KnownPublicNetworkAccessOptions
+    DataCollectionEndpointResource, DataCollectionEndpointNetworkAcls, KnownPublicNetworkAccessOptions, \
+    MonitoringAccountDestination, DataCollectionRuleDataSources
 from azure.mgmt.monitor.v2022_06_01.operations import DataCollectionRulesOperations, DataCollectionEndpointsOperations
 
 from davidkhala.azure import TokenCredential
@@ -16,11 +17,15 @@ from davidkhala.azure import TokenCredential
 
 @dataclass
 class AbstractResource(ABC):
-    immutable_id: Optional[str]
+    immutable_id: str | None
     id: str
     location: str
     name: str
     resource_group_name: str
+
+    def __init__(self, resource_group_name: str):
+        self.resource_group_name = resource_group_name
+        self.immutable_id = None
 
     def from_resource(self, resource):
         self.id = resource.id
@@ -68,7 +73,7 @@ class DCR:
 
     class Destinations:
         def __init__(self, destinations: DataCollectionRuleDestinations):
-            mapper = lambda l: (item.name for item in l)
+            mapper = lambda l: [] if l is None else (item.name for item in l)
 
             self.names = [
                 *mapper(destinations.log_analytics),
@@ -85,10 +90,10 @@ class DCR:
                resource_group_name: str,
                name: str,
                data_collection_endpoint_id: str,
+               schema_name:str,
                schema: Dict[str, KnownColumnDefinitionType | str],
                destinations: DataCollectionRuleDestinations,
                location="East Asia") -> DataCollectionRuleResource:
-        schema_name = f"Custom-{name}_CL"
         schema["TimeGenerated"] = KnownColumnDefinitionType.DATETIME  # decorate
         columns = [ColumnDefinition(name=name, type=_type) for name, _type in schema.items()]
 
@@ -101,7 +106,10 @@ class DCR:
             data_flows=[
                 DataFlow(streams=[schema_name], destinations=DCR.Destinations(destinations).names)
             ],
-            destinations=destinations
+            destinations=destinations,
+            data_sources=DataCollectionRuleDataSources()
+
+            # TODO DataSource
         )
         r = self.data_collection_rules.create(resource_group_name, name, body)
         return r
@@ -118,33 +126,6 @@ class Workspace:
     """
     Azure Monitor workspace
     """
-
-    def __init__(self, azure_monitor_workspaces: AzureMonitorWorkspacesOperations):
-        self.azure_monitor_workspaces = azure_monitor_workspaces
-
-    def list(self) -> Iterable[AzureMonitorWorkspaceResource]:
-        return self.azure_monitor_workspaces.list_by_subscription()
-
-    def create(self, resource_group_name: str, name: str, location="East Asia"):
-        r = self.azure_monitor_workspaces.create(
-            resource_group_name, name,
-            AzureMonitorWorkspaceResource(location=location)
-        )
-        return Workspace.Resource(resource_group_name).from_resource(r)
-
-    def get(self, resource_group_name: str, name: str):
-        return (
-            Workspace.Resource(resource_group_name)
-            .from_resource(self.azure_monitor_workspaces.get(resource_group_name, name))
-        )
-
-    def delete(self, resource_group_name: str, name: str):
-        self.azure_monitor_workspaces.delete(resource_group_name, name)
-        try:
-            self.azure_monitor_workspaces.delete(resource_group_name, name)
-        except HttpResponseError as e:
-            if str(e) != "Operation returned an invalid status 'Accepted'":
-                raise e
 
     class Resource(AbstractResource):
         data_collection_rule: str
@@ -163,6 +144,39 @@ class Workspace:
             assert got.stream_declarations is None
             return got
 
+        def as_destination(self) -> MonitoringAccountDestination:
+            return MonitoringAccountDestination(
+                account_resource_id=self.id,
+                name=self.name
+            )
+
+    def __init__(self, azure_monitor_workspaces: AzureMonitorWorkspacesOperations):
+        self.azure_monitor_workspaces = azure_monitor_workspaces
+
+    def list(self) -> Iterable[AzureMonitorWorkspaceResource]:
+        return self.azure_monitor_workspaces.list_by_subscription()
+
+    def create(self, resource_group_name: str, name: str, location="East Asia")->Resource:
+        r = self.azure_monitor_workspaces.create(
+            resource_group_name, name,
+            AzureMonitorWorkspaceResource(location=location)
+        )
+        return Workspace.Resource(resource_group_name).from_resource(r)
+
+    def get(self, resource_group_name: str, name: str) -> Resource:
+        return (
+            Workspace.Resource(resource_group_name)
+            .from_resource(self.azure_monitor_workspaces.get(resource_group_name, name))
+        )
+
+    def delete(self, resource_group_name: str, name: str):
+        self.azure_monitor_workspaces.delete(resource_group_name, name)
+        try:
+            self.azure_monitor_workspaces.delete(resource_group_name, name)
+        except HttpResponseError as e:
+            if str(e) != "Operation returned an invalid status 'Accepted'":
+                raise e
+
 
 class DCE:
     def __init__(self, data_collection_endpoints: DataCollectionEndpointsOperations):
@@ -173,7 +187,7 @@ class DCE:
         logs_ingestion: str
 
         def __init__(self, resource_group_name: str, data_collection_endpoints: DataCollectionEndpointsOperations):
-            super().__init__(resource_group_name=resource_group_name)
+            super().__init__(resource_group_name)
             self.data_collection_endpoints = data_collection_endpoints
 
         def from_resource(self, r: DataCollectionEndpointResource):
@@ -188,6 +202,7 @@ class DCE:
         def create_dcr(self,
                        client: MonitorManagementClient,
                        name: str,
+                       schema_name: str,
                        schema: Dict[str, KnownColumnDefinitionType | str],
                        destinations: DataCollectionRuleDestinations):
             control = DCR(client.data_collection_rules)
@@ -196,6 +211,7 @@ class DCE:
                 self.resource_group_name,
                 name,
                 self.id,
+                schema_name,
                 schema,
                 destinations,
                 self.location
@@ -208,9 +224,8 @@ class DCE:
                 public_network_access=KnownPublicNetworkAccessOptions.ENABLED
             )
         )
-        r = DCE.Resource(self.data_collection_endpoints, resource_group_name, name, location)
-        r.from_resource(self.data_collection_endpoints.create(resource_group_name, name, body))
-        return r
+        r = DCE.Resource(resource_group_name, self.data_collection_endpoints)
+        return r.from_resource(self.data_collection_endpoints.create(resource_group_name, name, body))
 
     def delete(self, resource_group_name: str, name: str):
         self.data_collection_endpoints.delete(resource_group_name, name)

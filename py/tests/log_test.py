@@ -3,9 +3,9 @@ import unittest
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
 from davidkhala.azure.auth import default
-from davidkhala.azure.monitor import Management as MonitorManagement, DCR
-from davidkhala.azure.log import Management as LogManagement
 from davidkhala.azure.log import Ingestion
+from davidkhala.azure.log import Analytics as LogManagement
+from davidkhala.azure.monitor import Management as MonitorManagement
 
 credential = default()
 subscription_id = "3fc7b4b0-def4-470c-a27a-8cddb4e0639f"
@@ -35,6 +35,7 @@ class MonitorTestCase(unittest.TestCase):
     def test_workspace_create(self):
         r = self.workspace.create(rg, self.name)
         print(r)
+        return r
 
     def test_dcr_populate(self):
         r = self.workspace.get(rg, self.name)
@@ -45,13 +46,6 @@ class MonitorTestCase(unittest.TestCase):
     def test_workspace_delete(self):
         self.workspace.delete(rg, self.name)
 
-    def test_dcr_create(self):
-        r = self.workspace.get(rg, self.name)
-        schema = {
-            'batch_id': KnownColumnDefinitionType.INT
-        }
-        # FIXME
-        r.create_dcr(self.management.client, 'dcr', schema, 'dce')
 
 
 class DCRTestCase(unittest.TestCase):
@@ -62,21 +56,28 @@ class DCRTestCase(unittest.TestCase):
         for dcr_item in dcr.list():
             print(dcr_item)
 
-
     def test_dcr_create(self):
         dce = DCETestCase().test_dce_create()
+        workspace = MonitorTestCase().test_workspace_create()
         name = 'dcr'
-        schema= {
+        schema_name  = "..."
+        schema = {
             'batch_id': KnownColumnDefinitionType.INT
         }
         from azure.mgmt.monitor.v2022_06_01.models import DataCollectionRuleDestinations
-        from azure.mgmt.monitor.v2022_06_01.models import MonitoringAccountDestination
+
         destinations = DataCollectionRuleDestinations(
-            monitoring_accounts =[MonitoringAccountDestination()]
+            monitoring_accounts=[workspace.as_destination()]
         )
 
-        dcr = dce.create_dcr(self.management.client, name)
+        dcr = dce.create_dcr(
+            self.management.client,
+            name,
+            schema,
+            destinations)
         print(dcr)
+
+
 class DCETestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
 
