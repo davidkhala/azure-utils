@@ -14,28 +14,32 @@ class DCE:
         configuration_access: str
         logs_ingestion: str
 
-        def __init__(self, resource_group_name: str, data_collection_endpoints: DataCollectionEndpointsOperations):
-            super().__init__(resource_group_name)
-            self.data_collection_endpoints = data_collection_endpoints
-
         def from_resource(self, r: DataCollectionEndpointResource):
             super().from_resource(r)
             self.configuration_access = r.configuration_access.endpoint
             self.logs_ingestion = r.logs_ingestion.endpoint
             return self
 
-        def delete(self):
-            self.data_collection_endpoints.delete(self.resource_group_name, self.name)
-
-    def create(self, resource_group_name, name, location="East Asia"):
+    def create(self, resource_group_name, name, location="East Asia") -> Resource:
         body = DataCollectionEndpointResource(
             location=location,
             network_acls=DataCollectionEndpointNetworkAcls(
                 public_network_access=KnownPublicNetworkAccessOptions.ENABLED
             )
         )
-        r = DCE.Resource(resource_group_name, self.data_collection_endpoints)
-        return r.from_resource(self.data_collection_endpoints.create(resource_group_name, name, body))
+        return DCE.Resource().from_resource(
+            self.data_collection_endpoints.create(resource_group_name, name, body)
+        )
+
+    def get(self, resource_group_name, name)->Resource:
+
+        return DCE.Resource().from_resource(
+            self.data_collection_endpoints.get(resource_group_name, name)
+        )
+
+    def get_by_id(self, resource_id: str):
+        words = resource_id.split("/")
+        return self.get(words[4], words[-1])
 
     def delete(self, resource_group_name: str, name: str):
         self.data_collection_endpoints.delete(resource_group_name, name)

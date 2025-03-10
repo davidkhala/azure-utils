@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from azure.core.credentials import TokenCredential
@@ -29,6 +30,8 @@ class CredentialsCase(unittest.TestCase):
                     self.assertIsInstance(credential, AzurePowerShellCredential)
                 case 5:
                     self.assertIsInstance(credential, AzureDeveloperCliCredential)
+        if os.environ.get("ci") is None:
+            d.get_token(*default_scopes)
 
     def test_from_env(self):
         auth = credentials()

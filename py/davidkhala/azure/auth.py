@@ -9,8 +9,8 @@ from azure.identity import (
 from davidkhala.azure import TokenCredential
 
 DefaultCredentialType = EnvironmentCredential | ManagedIdentityCredential | SharedTokenCacheCredential | AzureCliCredential | AzurePowerShellCredential | AzureDeveloperCliCredential
-cli = lambda: AzureCliCredential()
-default = lambda: DefaultAzureCredential()
+cli = AzureCliCredential
+default = DefaultAzureCredential
 
 
 def from_service_principal(tenant_id: str, client_id: str, client_secret: str) -> TokenCredential:

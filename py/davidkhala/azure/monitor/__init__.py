@@ -10,13 +10,13 @@ class AbstractResource(ABC):
     name: str
     resource_group_name: str
 
-    def __init__(self, resource_group_name: str):
-        self.resource_group_name = resource_group_name
+    def __init__(self):
         self.immutable_id = None
 
     def from_resource(self, resource):
         self.id = resource.id
         self.location = resource.location
+        self.resource_group_name = resource.id.split('/')[4]
         self.name = resource.name
         if hasattr(resource, 'immutable_id'):
             self.immutable_id = resource.immutable_id

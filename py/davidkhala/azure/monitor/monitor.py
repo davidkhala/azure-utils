@@ -67,11 +67,11 @@ class Workspace:
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
         )
-        return Workspace.Resource(resource_group_name).from_resource(r)
+        return Workspace.Resource().from_resource(r)
 
     def get(self, resource_group_name: str, name: str) -> Resource:
         return (
-            Workspace.Resource(resource_group_name)
+            Workspace.Resource()
             .from_resource(self.azure_monitor_workspaces.get(resource_group_name, name))
         )
 

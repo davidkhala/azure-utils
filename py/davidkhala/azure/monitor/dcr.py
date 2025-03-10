@@ -24,6 +24,12 @@ class DCR:
                 for stream in self.stream_declarations.keys():
                     return stream
 
+        def schema(self, stream_name) -> dict[str, KnownColumnDefinitionType | str]:
+            r = {}
+            for column in self.stream_declarations[stream_name].columns:
+                r[column.name] = column.type
+            return r
+
     class Destinations:
         def __init__(self, destinations: DataCollectionRuleDestinations):
             mapper = lambda l: [] if l is None else (item.name for item in l)
@@ -44,7 +50,7 @@ class DCR:
 
     def get(self, resource_group_name: str, name: str) -> Resource:
         r = self.data_collection_rules.get(resource_group_name, name)
-        return DCR.Resource(resource_group_name).from_resource(r)
+        return DCR.Resource().from_resource(r)
 
     def list(self) -> Iterable[DataCollectionRuleResource]:
         return self.data_collection_rules.list_by_subscription()
@@ -61,6 +67,7 @@ class Factory:
     def __init__(self,
                  resource_group_name: str,
                  name: str):
+
         self.resource_group_name = resource_group_name
         self.name = name
         self.stream_declarations = {}
@@ -71,8 +78,9 @@ class Factory:
     def with_DataCollectionEndpoint(self, dce: DCE.Resource):
         self.location = dce.location
         self.data_collection_endpoint_id = dce.id
+        return self
 
-    def with_LogAnalyticsTable(self, name, schema: Dict[str, KnownColumnDefinitionType | str],
+    def with_LogAnalyticsTable(self, name, schema: dict[str, KnownColumnDefinitionType | str],
                                workspace: AnalyticsWorkspace.Resource):
         stream_name = f"Custom-{name}_CL"
         schema["TimeGenerated"] = KnownColumnDefinitionType.DATETIME  # decorate
@@ -97,6 +105,7 @@ class Factory:
             transform_kql="source | extend TimeGenerated = now()",
             output_stream=stream_name
         ))
+        return self
 
     def build(self, operations: DataCollectionRulesOperations):
         body = DataCollectionRuleResource(

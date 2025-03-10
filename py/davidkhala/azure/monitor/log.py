@@ -18,8 +18,8 @@ class AnalyticsWorkspace:
     class Resource(AbstractResource):
         customer_id: str
 
-        def __init__(self, resource_group_name: str, client: LogAnalyticsManagementClient):
-            super().__init__(resource_group_name)
+        def __init__(self, client: LogAnalyticsManagementClient):
+            super().__init__()
             self.client = client
 
         @property
@@ -33,7 +33,7 @@ class AnalyticsWorkspace:
 
     def create(self, resource_group_name, name) -> Resource:
         promise = self.client.workspaces.begin_create_or_update(resource_group_name, name)
-        return AnalyticsWorkspace.Resource(resource_group_name, self.tables).from_resource(promise.result())
+        return AnalyticsWorkspace.Resource(self.tables).from_resource(promise.result())
 
     @property
     def tables(self):
@@ -50,7 +50,7 @@ class AnalyticsWorkspace:
 
     def get(self, resource_group_name, name) -> Resource:
         return (
-            AnalyticsWorkspace.Resource(resource_group_name, self.tables)
+            AnalyticsWorkspace.Resource(self.tables)
             .from_resource(self.client.workspaces.get(resource_group_name, name))
         )
 

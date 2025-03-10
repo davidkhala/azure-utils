@@ -2,13 +2,14 @@ import unittest
 
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
-from davidkhala.azure.auth import default
+from davidkhala.azure.ci import credentials
+from davidkhala.azure.monitor.dce import DCE
 from davidkhala.azure.monitor.dcr import DCR
+from davidkhala.azure.monitor.ingestion import Ingestion
 from davidkhala.azure.monitor.log import AnalyticsWorkspace
 from davidkhala.azure.monitor.monitor import Management as MonitorManagement
-from davidkhala.azure.monitor.ingestion import Ingestion
 
-credential = default()
+credential = credentials()
 subscription_id = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
 rg = "root-compartment"
 
@@ -16,6 +17,7 @@ rg = "root-compartment"
 class LogAnalyticsTestCase(unittest.TestCase):
     management = AnalyticsWorkspace(credential, subscription_id)
     name = 'Log-Analytics'
+
     def test_workspace_list(self):
         for w in self.management.list():
             print(w)
@@ -23,6 +25,7 @@ class LogAnalyticsTestCase(unittest.TestCase):
     def test_workspace_get(self):
         r = self.management.get(rg, self.name)
         return r
+
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
@@ -48,59 +51,70 @@ class MonitorTestCase(unittest.TestCase):
         self.workspace.delete(rg, self.name)
 
 
+dcr_name = 'dcr2'
+monitorManage = MonitorManagement(credential, subscription_id)
+
 
 class DCRTestCase(unittest.TestCase):
-    management = MonitorManagement(credential, subscription_id)
+    dcr = DCR(monitorManage.dcr)
 
     def test_dcr_list(self):
-        dcr = DCR(self.management.dcr)
-        for dcr_item in dcr.list():
+        for dcr_item in self.dcr.list():
             print(dcr_item)
 
     def test_dcr_create(self):
         dce = DCETestCase().test_dce_create()
 
-        name = 'dcr2'
         workspace = LogAnalyticsTestCase().test_workspace_get()
         schema = {
             'batch_id': KnownColumnDefinitionType.INT
         }
         from davidkhala.azure.monitor.dcr import Factory
-        builder = Factory(dce.resource_group_name, name)
+        builder = Factory(dce.resource_group_name, dcr_name)
         builder.with_DataCollectionEndpoint(dce)
         builder.with_LogAnalyticsTable(
             'foreachBatch',
             schema,
             workspace
         )
-        builder.build(self.management.dcr)
+        builder.build(monitorManage.dcr)
 
+    def test_dcr_get(self):
+        r = self.dcr.get(rg, dcr_name)
+        print(r)
+        return r
 
 
 class DCETestCase(unittest.TestCase):
-    management = MonitorManagement(credential, subscription_id)
-
-    def test_dce_list(self):
-        for dce in self.management.dce.list():
-            print(dce)
-
+    dce_operations = DCE(monitorManage.dce)
     dce_name = 'dce'
 
+    def test_dce_list(self):
+        for dce in self.dce_operations.list():
+            print(dce)
+
     def test_dce_create(self):
-        r = self.management.dce.create(rg, self.dce_name)
+        r = self.dce_operations.create(rg, self.dce_name)
         print(r)
         self.assertTrue(r.logs_ingestion.startswith(f"https://{self.dce_name}-"))
         self.assertTrue(r.logs_ingestion.endswith(".eastasia-1.ingest.monitor.azure.com"))
         return r
 
     def tearDown(self):
-        self.management.dce.delete(rg, self.dce_name)
+        self.dce_operations.delete(rg, self.dce_name)
 
 
 class IngestionTestCase(unittest.TestCase):
     def test_ingestion(self):
-        endpoint = "https://dce-shvq.eastasia-1.ingest.monitor.azure.com"
-        i = Ingestion(credential, endpoint)
+        dcr = DCRTestCase().test_dcr_get()
+
+        i = Ingestion(credential, dcr, None,
+                      dce_operations=DCE(monitorManage.dce)
+                      )
+        i.getLogger()
+        print(i.schema)
+        i.log({'batch_id': 0})
+        i.commit()
 
 
 if __name__ == '__main__':
