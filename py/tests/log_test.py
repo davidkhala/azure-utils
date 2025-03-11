@@ -3,25 +3,26 @@ import unittest
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
 from davidkhala.azure.auth import default
-from davidkhala.azure.log import Ingestion
-from davidkhala.azure.log import Analytics as LogManagement
-from davidkhala.azure.monitor import Management as MonitorManagement
+from davidkhala.azure.monitor.dcr import DCR
+from davidkhala.azure.monitor.log import AnalyticsWorkspace
+from davidkhala.azure.monitor.monitor import Management as MonitorManagement
+from davidkhala.azure.monitor.ingestion import Ingestion
 
 credential = default()
-subscription_id = "3fc7b4b0-def4-470c-a27a-8cddb4e0639f"
-rg = "AppTeamDemo"
+subscription_id = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
+rg = "root-compartment"
 
 
 class LogAnalyticsTestCase(unittest.TestCase):
-    management = LogManagement(credential, subscription_id)
-
+    management = AnalyticsWorkspace(credential, subscription_id)
+    name = 'Log-Analytics'
     def test_workspace_list(self):
         for w in self.management.list():
             print(w)
 
-    def test_dcr_create(self):
-        ...
-
+    def test_workspace_get(self):
+        r = self.management.get(rg, self.name)
+        return r
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
@@ -52,30 +53,28 @@ class DCRTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
 
     def test_dcr_list(self):
-        dcr = self.management.dcr
+        dcr = DCR(self.management.dcr)
         for dcr_item in dcr.list():
             print(dcr_item)
 
     def test_dcr_create(self):
         dce = DCETestCase().test_dce_create()
-        workspace = MonitorTestCase().test_workspace_create()
-        name = 'dcr'
-        schema_name  = "..."
+
+        name = 'dcr2'
+        workspace = LogAnalyticsTestCase().test_workspace_get()
         schema = {
             'batch_id': KnownColumnDefinitionType.INT
         }
-        from azure.mgmt.monitor.v2022_06_01.models import DataCollectionRuleDestinations
-
-        destinations = DataCollectionRuleDestinations(
-            monitoring_accounts=[workspace.as_destination()]
-        )
-
-        dcr = dce.create_dcr(
-            self.management.client,
-            name,
+        from davidkhala.azure.monitor.dcr import Factory
+        builder = Factory(dce.resource_group_name, name)
+        builder.with_DataCollectionEndpoint(dce)
+        builder.with_LogAnalyticsTable(
+            'foreachBatch',
             schema,
-            destinations)
-        print(dcr)
+            workspace
+        )
+        builder.build(self.management.dcr)
+
 
 
 class DCETestCase(unittest.TestCase):

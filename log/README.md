@@ -1,6 +1,8 @@
 [wiki](https://github.com/davidkhala/azure-utils/wiki/Log)
 
-TODO Resource Management: provision DCR and Log tables
+TODO 
+- https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal
 
 
-Azure Monitor workspace is NOT Log Analytics workspace
+# Notes
+- Azure Monitor workspace **IS NOT** Log Analytics workspace
