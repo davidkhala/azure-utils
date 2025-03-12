@@ -3,7 +3,9 @@ from typing import Optional, Any
 from azure.core.credentials import TokenCredential as AzTokenCredential, AccessToken
 from azure.identity._internal.get_token_mixin import GetTokenMixin
 
-default_scopes = ['https://graph.microsoft.com/.default']
+default_scopes = [
+    'https://management.azure.com/.default'  # for Azure Resource Manager
+]
 
 
 class TokenCredential(AzTokenCredential):

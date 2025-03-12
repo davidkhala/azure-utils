@@ -1,12 +1,13 @@
-# https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/identity/azure-identity/samples/credential_creation_code_snippets.py
+from typing import Iterator, Tuple
 
+from azure.core.credentials import TokenProvider
 from azure.identity import (
     DefaultAzureCredential, AzureCliCredential,
     EnvironmentCredential, ManagedIdentityCredential, SharedTokenCacheCredential,
     AzurePowerShellCredential, AzureDeveloperCliCredential, ClientSecretCredential,
 )
 
-from davidkhala.azure import TokenCredential
+from davidkhala.azure import TokenCredential, default_scopes
 
 DefaultCredentialType = EnvironmentCredential | ManagedIdentityCredential | SharedTokenCacheCredential | AzureCliCredential | AzurePowerShellCredential | AzureDeveloperCliCredential
 cli = AzureCliCredential
@@ -16,34 +17,47 @@ default = DefaultAzureCredential
 def from_service_principal(tenant_id: str, client_id: str, client_secret: str) -> TokenCredential:
     return TokenCredential(ClientSecretCredential(tenant_id, client_id, client_secret))
 
-# TODO Check this AI content
-# from azure.identity import DefaultAzureCredential
-# from azure.mgmt.resource import SubscriptionClient
-#
-# # Authenticate using DefaultAzureCredential
-# credential = DefaultAzureCredential()
-#
-# # Create a SubscriptionClient to query subscription details
-# subscription_client = SubscriptionClient(credential)
-#
-# # Get the first subscription (you can iterate through all subscriptions if needed)
-# subscription = next(subscription_client.subscriptions.list())
-#
-# # Get the tenant ID and subscription ID
-# tenant_id = subscription.tenant_id
-# subscription_id = subscription.subscription_id
-#
-# # Get the subscription details
-# subscription_details = subscription_client.subscriptions.get(subscription_id)
-#
-# # Print the account information
-# print(f"Subscription ID: {subscription_id}")
-# print(f"Tenant ID: {tenant_id}")
-#
-# # Check the principal type by inspecting the subscription details
-# if hasattr(subscription_details, 'user'):
-#     print("This is a User Principal.")
-# elif hasattr(subscription_details, 'service_principal'):
-#     print("This is a Service Principal.")
-# else:
-#     print("The principal type could not be determined.")
+
+from azure.identity import CredentialUnavailableError
+
+
+def actually(credentials: DefaultAzureCredential) -> Iterator[Tuple[TokenProvider, int]]:
+    """
+    Personal Microsoft account is not supported to get_token(...)
+    :param credentials:
+    :return:
+    """
+    for i, credential in enumerate(credentials.credentials):
+        try:
+            credential.get_token(*default_scopes)
+            yield credential, i
+        except CredentialUnavailableError as na_error:
+            err_str = str(na_error)
+
+            swallow: bool = False
+            match i:
+                case 0:
+                    swallow = err_str == """EnvironmentCredential authentication unavailable. Environment variables are not fully configured.
+Visit https://aka.ms/azsdk/python/identity/environmentcredential/troubleshoot to troubleshoot this issue."""
+                case 1:
+                    swallow = err_str in [
+                        'ManagedIdentityCredential authentication unavailable, no response from the IMDS endpoint.',
+                        'ManagedIdentityCredential authentication unavailable, no response from the IMDS endpoint. invalid_request'
+                    ]
+                case 2:
+                    swallow = err_str == 'SharedTokenCacheCredential authentication unavailable. No accounts were found in the cache.'
+                case 3:
+                    swallow = err_str == "Please run 'az login' to set up an account"
+                case 4:
+                    swallow = err_str in [
+                        'Az.Account module >= 2.2.0 is not installed',
+                        'Please run "Connect-AzAccount" to set up account'
+                    ]
+
+                case 5:
+                    swallow = err_str in [
+                        "Azure Developer CLI could not be found. Please visit https://aka.ms/azure-dev for installation instructions and then,once installed, authenticate to your Azure account using 'azd auth login'.",
+                        "Please run 'azd auth login' from a command prompt to authenticate before using this credential."
+                    ]
+            if not swallow:
+                raise na_error

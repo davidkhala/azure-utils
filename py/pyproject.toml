@@ -12,12 +12,14 @@ azure-identity = "*"
 azure-monitor-ingestion = { version = "*", optional = true }
 azure-mgmt-monitor = { version = "*", optional = true }
 azure-mgmt-loganalytics = { version = "*", optional = true }
+azure-mgmt-resource = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
+
 [tool.poetry.extras]
 log = ["azure-monitor-ingestion", "azure-mgmt-monitor", "azure-mgmt-loganalytics"]
-
+tenant = ["azure-mgmt-resource"]
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

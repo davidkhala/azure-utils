@@ -1,7 +1,9 @@
+import os
 import unittest
 
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
+from davidkhala.azure.auth import from_service_principal
 from davidkhala.azure.ci import credentials
 from davidkhala.azure.monitor.dce import DCE
 from davidkhala.azure.monitor.dcr import DCR
@@ -107,7 +109,11 @@ class DCETestCase(unittest.TestCase):
 class IngestionTestCase(unittest.TestCase):
     def test_ingestion(self):
         dcr = DCRTestCase().test_dcr_get()
-
+        credential = from_service_principal(
+            tenant_id=os.environ.get('TENANT_ID'),
+            client_id=os.environ.get('CLIENT_ID'),
+            client_secret=os.environ.get('CLIENT_SECRET'),
+        )
         i = Ingestion(credential, dcr, None,
                       dce_operations=DCE(monitorManage.dce)
                       )
