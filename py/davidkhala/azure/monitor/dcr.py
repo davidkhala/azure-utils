@@ -92,7 +92,6 @@ class Factory:
             name=workspace.customer_id.replace('-', ''),
         )
         _workspace.workspace_id = workspace.customer_id
-        print(_workspace)
 
         if self.destinations.log_analytics is None:
             self.destinations.log_analytics = [_workspace]
