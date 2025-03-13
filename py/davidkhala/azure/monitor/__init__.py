@@ -1,17 +1,13 @@
-from abc import ABC
 from dataclasses import dataclass
 
 
 @dataclass
-class AbstractResource(ABC):
+class AbstractResource:
     immutable_id: str | None
     id: str
     location: str
     name: str
     resource_group_name: str
-
-    def __init__(self):
-        self.immutable_id = None
 
     def from_resource(self, resource):
         self.id = resource.id

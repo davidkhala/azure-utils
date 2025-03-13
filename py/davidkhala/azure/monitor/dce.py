@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Iterable
 from azure.mgmt.monitor.v2022_06_01.models import DataCollectionEndpointResource, DataCollectionEndpointNetworkAcls, \
     KnownPublicNetworkAccessOptions
@@ -10,6 +11,7 @@ class DCE:
     def __init__(self, data_collection_endpoints: DataCollectionEndpointsOperations):
         self.data_collection_endpoints = data_collection_endpoints
 
+    @dataclass
     class Resource(AbstractResource):
         configuration_access: str
         logs_ingestion: str
@@ -27,13 +29,13 @@ class DCE:
                 public_network_access=KnownPublicNetworkAccessOptions.ENABLED
             )
         )
-        return DCE.Resource().from_resource(
+        return DCE.Resource(*[None]*7).from_resource(
             self.data_collection_endpoints.create(resource_group_name, name, body)
         )
 
     def get(self, resource_group_name, name)->Resource:
 
-        return DCE.Resource().from_resource(
+        return DCE.Resource(*[None]*7).from_resource(
             self.data_collection_endpoints.get(resource_group_name, name)
         )
 

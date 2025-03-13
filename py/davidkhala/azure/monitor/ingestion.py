@@ -1,6 +1,6 @@
 from typing import List
 
-from azure.identity import ClientSecretCredential, DefaultAzureCredential, EnvironmentCredential, AzureCliCredential
+from azure.identity import ClientSecretCredential
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 from azure.monitor.ingestion import LogsIngestionClient
 
@@ -18,17 +18,7 @@ class Ingestion:
     def __init__(self, credential: TokenCredential, dcr: DCR.Resource, end_point: str | None,
                  *,
                  dce_operations: DCE = None):
-        if isinstance(credential, TokenCredential):
-            assert type(credential.credential) == ClientSecretCredential
-        elif isinstance(credential, DefaultAzureCredential):
-
-            print(vars(credential.credentials))
-
-
-
-
-
-
+        assert type(credential.credential) == ClientSecretCredential
         if end_point is None:
             end_point = dce_operations.get_by_id(dcr.data_collection_endpoint_id).logs_ingestion
         """

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Iterable
 
 from azure.mgmt.loganalytics import LogAnalyticsManagementClient
@@ -15,11 +16,11 @@ class AnalyticsWorkspace:
     def list(self) -> Iterable[NativeWorkspace]:
         return self.client.workspaces.list()
 
+    @dataclass
     class Resource(AbstractResource):
-        customer_id: str
 
         def __init__(self, client: LogAnalyticsManagementClient):
-            super().__init__()
+            super().__init__(*[None] * 5)
             self.client = client
 
         @property
@@ -28,7 +29,7 @@ class AnalyticsWorkspace:
 
         def from_resource(self, resource: NativeWorkspace):
             super().from_resource(resource)
-            self.customer_id = resource.customer_id
+            self.immutable_id = resource.customer_id
             return self
 
     def create(self, resource_group_name, name) -> Resource:

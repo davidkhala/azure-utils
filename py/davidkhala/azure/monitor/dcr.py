@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Dict, List, Iterable
 
 from azure.mgmt.monitor.v2022_06_01.models import StreamDeclaration, DataCollectionRuleResource, \
@@ -9,6 +10,7 @@ from davidkhala.azure.monitor import AbstractResource
 
 
 class DCR:
+    @dataclass
     class Resource(AbstractResource):
         stream_declarations: Dict[str, StreamDeclaration] | None
         data_collection_endpoint_id: str
@@ -50,7 +52,7 @@ class DCR:
 
     def get(self, resource_group_name: str, name: str) -> Resource:
         r = self.data_collection_rules.get(resource_group_name, name)
-        return DCR.Resource().from_resource(r)
+        return DCR.Resource(*[None] * 7).from_resource(r)
 
     def list(self) -> Iterable[DataCollectionRuleResource]:
         return self.data_collection_rules.list_by_subscription()
@@ -89,9 +91,9 @@ class Factory:
 
         _workspace = LogAnalyticsDestination(
             workspace_resource_id=workspace.id,
-            name=workspace.customer_id.replace('-', ''),
+            name=workspace.immutable_id.replace('-', ''),
         )
-        _workspace.workspace_id = workspace.customer_id
+        _workspace.workspace_id = workspace.immutable_id
 
         if self.destinations.log_analytics is None:
             self.destinations.log_analytics = [_workspace]

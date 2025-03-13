@@ -1,8 +1,10 @@
+from dataclasses import dataclass
+from time import sleep
 from typing import Iterable
 
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError
 from azure.mgmt.monitor import MonitorManagementClient
-from azure.mgmt.monitor.v2021_06_03_preview.models import AzureMonitorWorkspaceResource
+from azure.mgmt.monitor.v2021_06_03_preview.models import AzureMonitorWorkspaceResource, ProvisioningState
 from azure.mgmt.monitor.v2021_06_03_preview.operations import AzureMonitorWorkspacesOperations
 from azure.mgmt.monitor.v2022_06_01.models import MonitoringAccountDestination
 
@@ -32,16 +34,18 @@ class Workspace:
     Azure Monitor workspace
     """
 
+    @dataclass
     class Resource(AbstractResource):
         data_collection_rule: str
         data_collection_endpoint: str
-        state: str  # one of ["Creating", "Succeeded", "Deleting","Failed", and "Canceled"]
+        state: ProvisioningState | str  # one of ["Creating", "Succeeded", "Deleting","Failed", and "Canceled"]
 
         def from_resource(self, resource: AzureMonitorWorkspaceResource):
             super().from_resource(resource)
             self.data_collection_rule = resource.default_ingestion_settings.data_collection_rule_resource_id
             self.data_collection_endpoint = resource.default_ingestion_settings.data_collection_endpoint_resource_id
             self.state = resource.provisioning_state
+            self.immutable_id = resource.account_id
             return self
 
         def default_dcr(self, client: MonitorManagementClient):
@@ -64,30 +68,34 @@ class Workspace:
     def list(self) -> Iterable[AzureMonitorWorkspaceResource]:
         return self.azure_monitor_workspaces.list_by_subscription()
 
-    def create_async(self, resource_group_name: str, name: str, location) -> AzureMonitorWorkspaceResource:
-        # TODO "There is a Create operation currently running on this Monitoring account"
-        return self.azure_monitor_workspaces.create(
+    def create(self, resource_group_name: str, name: str, location="East Asia") -> Resource:
+        r = self.azure_monitor_workspaces.create(
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
         )
+        wrapped = Workspace.Resource(*[None] * 8).from_resource(r)
+        assert wrapped.state == ProvisioningState.SUCCEEDED
+        return wrapped
 
-    def create(self, resource_group_name: str, name: str, location="East Asia"):
-        r = self.create_async(resource_group_name, name, location)
-        state = r.provisioning_state
-        while state in ["Creating"]:
-            r = self.get(resource_group_name, name)
-            state = r.state
-        return r
+    def get(self, resource_group_name: str, name: str) -> Resource | None:
+        try:
+            r = self.azure_monitor_workspaces.get(resource_group_name, name)
+            return Workspace.Resource(*[None] * 8).from_resource(r)
+        except ResourceNotFoundError:
+            return None
 
-    def get(self, resource_group_name: str, name: str) -> Resource:
-        return (
-            Workspace.Resource()
-            .from_resource(self.azure_monitor_workspaces.get(resource_group_name, name))
-        )
-
-    def delete(self, resource_group_name: str, name: str):
+    def delete_async(self, resource_group_name: str, name: str):
         try:
             self.azure_monitor_workspaces.delete(resource_group_name, name)
         except HttpResponseError as e:
             if str(e) != "Operation returned an invalid status 'Accepted'":
                 raise e
+
+    def delete(self, resource_group_name: str, name: str):
+        self.delete_async(resource_group_name, name)
+        r = self.get(resource_group_name, name)
+        while r is not None:
+            assert r.state == ProvisioningState.DELETING
+            r = self.get(resource_group_name, name)
+            print(r)
+        return r
