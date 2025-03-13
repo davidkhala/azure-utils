@@ -1,10 +1,9 @@
 import os
 import unittest
-from datetime import datetime
 
 from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
-from davidkhala.azure.auth import default, from_service_principal
+from davidkhala.azure.auth import from_service_principal
 from davidkhala.azure.ci import credentials
 from davidkhala.azure.monitor.dce import DCE
 from davidkhala.azure.monitor.dcr import DCR
@@ -14,7 +13,7 @@ from davidkhala.azure.monitor.monitor import Management as MonitorManagement
 
 credential = credentials()
 subscription_id = "d02180af-0630-4747-ab1b-0d3b3c12dafb"
-rg = "root-compartment"
+rg = "LogAnalyticsDefaultResources"
 
 
 class LogAnalyticsTestCase(unittest.TestCase):
@@ -103,10 +102,12 @@ class DCETestCase(unittest.TestCase):
         return self.dce_operations.get(rg, self.dce_name)
 
     def test_dce_create(self):
-        r = self.dce_operations.create(rg, 'dce2')
+        name = 'dce2'
+        r = self.dce_operations.create(rg, name)
         print(r)
-        self.assertTrue(r.logs_ingestion.startswith(f"https://{self.dce_name}-"))
+        self.assertTrue(r.logs_ingestion.startswith(f"https://{name}-"))
         self.assertTrue(r.logs_ingestion.endswith(".eastasia-1.ingest.monitor.azure.com"))
+        self.dce_operations.delete(rg, name)
 
 
 class IngestionTestCase(unittest.TestCase):
