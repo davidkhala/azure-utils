@@ -6,17 +6,18 @@ from azure.identity import ManagedIdentityCredential, SharedTokenCacheCredential
     EnvironmentCredential, AzurePowerShellCredential, AzureDeveloperCliCredential
 
 from davidkhala.azure import default_scopes
-from davidkhala.azure.auth import default, actually
+from davidkhala.azure.auth import default, actually, DefaultCredentialType, CliCredential
 from davidkhala.azure.ci import credentials
 from davidkhala.azure.subscription import Subscription
 
 
 class CredentialsCase(unittest.TestCase):
     def test_default(self):
+        if os.environ.get("CI") == 'true': self.skipTest("No DefaultAzureCredential in CI environment")
         d = default()
-        expected_type = EnvironmentCredential | ManagedIdentityCredential | SharedTokenCacheCredential | AzureCliCredential | AzurePowerShellCredential | AzureDeveloperCliCredential
+
         for i, credential in enumerate(d.credentials):
-            self.assertIsInstance(credential, expected_type)
+            self.assertIsInstance(credential, DefaultCredentialType)
             self.assertIsInstance(credential, TokenCredential)
             match i:
                 case 0:
@@ -27,36 +28,35 @@ class CredentialsCase(unittest.TestCase):
                     self.assertIsInstance(credential, SharedTokenCacheCredential)
                 case 3:
                     self.assertIsInstance(credential, AzureCliCredential)
+                    data = vars(credential)
+                    # no raw credential info found
+                    self.assertEqual('', data['tenant_id'])
+                    self.assertIsNone(data['subscription'])
                 case 4:
                     self.assertIsInstance(credential, AzurePowerShellCredential)
                 case 5:
                     self.assertIsInstance(credential, AzureDeveloperCliCredential)
-        if os.environ.get("CI") is None:
-            d.get_token(*default_scopes)
 
-    def test_actual_of_default(self):
-        d = default()
+        d.get_token(*default_scopes)
 
-        for credential, i in actually(d):
-            # no raw credential info found
-            data = vars(credential)
-            if isinstance(credential, AzureCliCredential):
-                self.assertEqual(3, i)
-                self.assertEqual('', data['tenant_id'])
-                self.assertIsNone(data['subscription'])
+        # test actually
+        actual = list(actually(d))
+        self.assertEqual(1, actual.__len__())
+        self.assertIsInstance(actual[0], AzureCliCredential)
 
     def test_from_env(self):
         auth = credentials()
         # validate
         auth.get_token(*default_scopes)
-
+    def test_cli(self):
+        if os.environ.get("CI") == 'true': self.skipTest("No CliCredential in CI environment")
+        r = CliCredential.current()
+        print(r)
 
 class SubscriptionTestCase(unittest.TestCase):
     def test_default(self):
-        if os.environ.get("CI") == 'true': self.skipTest("in CI environment")
-        d = default()
-        sub = Subscription(d)
-
+        auth = credentials()
+        sub = Subscription(auth)
         print(sub.get_one())
 
 

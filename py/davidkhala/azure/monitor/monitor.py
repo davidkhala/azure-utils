@@ -35,11 +35,13 @@ class Workspace:
     class Resource(AbstractResource):
         data_collection_rule: str
         data_collection_endpoint: str
+        state: str  # one of ["Creating", "Succeeded", "Deleting","Failed", and "Canceled"]
 
         def from_resource(self, resource: AzureMonitorWorkspaceResource):
             super().from_resource(resource)
             self.data_collection_rule = resource.default_ingestion_settings.data_collection_rule_resource_id
             self.data_collection_endpoint = resource.default_ingestion_settings.data_collection_endpoint_resource_id
+            self.state = resource.provisioning_state
             return self
 
         def default_dcr(self, client: MonitorManagementClient):
@@ -62,13 +64,20 @@ class Workspace:
     def list(self) -> Iterable[AzureMonitorWorkspaceResource]:
         return self.azure_monitor_workspaces.list_by_subscription()
 
-    def create(self, resource_group_name: str, name: str, location="East Asia") -> Resource:
+    def create_async(self, resource_group_name: str, name: str, location) -> AzureMonitorWorkspaceResource:
         # TODO "There is a Create operation currently running on this Monitoring account"
-        r = self.azure_monitor_workspaces.create(
+        return self.azure_monitor_workspaces.create(
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
         )
-        return Workspace.Resource().from_resource(r)
+
+    def create(self, resource_group_name: str, name: str, location="East Asia"):
+        r = self.create_async(resource_group_name, name, location)
+        state = r.provisioning_state
+        while state in ["Creating"]:
+            r = self.get(resource_group_name, name)
+            state = r.state
+        return r
 
     def get(self, resource_group_name: str, name: str) -> Resource:
         return (
@@ -77,7 +86,6 @@ class Workspace:
         )
 
     def delete(self, resource_group_name: str, name: str):
-        self.azure_monitor_workspaces.delete(resource_group_name, name)
         try:
             self.azure_monitor_workspaces.delete(resource_group_name, name)
         except HttpResponseError as e:

@@ -33,15 +33,11 @@ class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
     workspace = management.workspace
     name = 'workspace'
-
+    def setUp(self):
+        self.workspace.create(rg, self.name)
     def test_workspace_list(self):
         for w in self.workspace.list():
             print(w)
-
-    def test_workspace_create(self):
-        r = self.workspace.create(rg, self.name)
-        print(r)
-        return r
 
     def test_dcr_populate(self):
         r = self.workspace.get(rg, self.name)
@@ -49,8 +45,9 @@ class MonitorTestCase(unittest.TestCase):
 
         # Permission denied on managed DCR
 
-    def test_workspace_delete(self):
+    def tearDown(self):
         self.workspace.delete(rg, self.name)
+
 
 
 dcr_name = 'dcr2'
@@ -102,8 +99,6 @@ class DCETestCase(unittest.TestCase):
         self.assertTrue(r.logs_ingestion.endswith(".eastasia-1.ingest.monitor.azure.com"))
         return r
 
-    def tearDown(self):
-        self.dce_operations.delete(rg, self.dce_name)
 
 
 class IngestionTestCase(unittest.TestCase):

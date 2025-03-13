@@ -1,4 +1,6 @@
-from typing import Iterator, Tuple
+import json
+import subprocess
+from typing import Iterator, Tuple, TypedDict
 
 from azure.core.credentials import TokenProvider
 from azure.identity import (
@@ -6,11 +8,11 @@ from azure.identity import (
     EnvironmentCredential, ManagedIdentityCredential, SharedTokenCacheCredential,
     AzurePowerShellCredential, AzureDeveloperCliCredential, ClientSecretCredential,
 )
+from davidkhala.syntax import is_windows, is_mac, is_linux
 
 from davidkhala.azure import TokenCredential, default_scopes
 
 DefaultCredentialType = EnvironmentCredential | ManagedIdentityCredential | SharedTokenCacheCredential | AzureCliCredential | AzurePowerShellCredential | AzureDeveloperCliCredential
-cli = AzureCliCredential
 default = DefaultAzureCredential
 
 
@@ -19,6 +21,41 @@ def from_service_principal(tenant_id: str, client_id: str, client_secret: str) -
 
 
 from azure.identity import CredentialUnavailableError
+
+
+class CliCredential:
+    class Structure(TypedDict):
+        class User(TypedDict):
+            name: str
+            type: str
+
+        class Tenant(TypedDict):
+            tenantId: str
+
+        environmentName: str
+        homeTenantId: str
+        id: str
+        isDefault: bool
+        managedByTenants: list[Tenant]
+        name: str
+        state: str
+        tenantId: str
+        user: User
+
+    @staticmethod
+    def current():
+        command = None
+        if is_windows():
+            command = 'az.cmd'
+        elif is_linux():
+            command = '/usr/bin/az'
+        elif is_mac():
+            # TODO
+            ...
+
+        r = subprocess.run([command, 'account', 'show'], capture_output=True, text=True)
+        data = r.stdout.strip()
+        return CliCredential.Structure(**json.loads(data))
 
 
 def actually(credentials: DefaultAzureCredential) -> Iterator[Tuple[TokenProvider, int]]:
