@@ -63,6 +63,7 @@ class Workspace:
         return self.azure_monitor_workspaces.list_by_subscription()
 
     def create(self, resource_group_name: str, name: str, location="East Asia") -> Resource:
+        # TODO "There is a Create operation currently running on this Monitoring account"
         r = self.azure_monitor_workspaces.create(
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
@@ -82,5 +83,3 @@ class Workspace:
         except HttpResponseError as e:
             if str(e) != "Operation returned an invalid status 'Accepted'":
                 raise e
-
-

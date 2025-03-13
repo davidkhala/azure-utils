@@ -1,6 +1,5 @@
 import os
 import unittest
-from typing import cast
 
 from azure.core.credentials import TokenCredential
 from azure.identity import ManagedIdentityCredential, SharedTokenCacheCredential, AzureCliCredential, \
