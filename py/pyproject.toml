@@ -11,7 +11,7 @@ python = "^3.10, <3.14"
 azure-identity = "*"
 azure-monitor-ingestion = { version = "*", optional = true }
 azure-mgmt-monitor = { version = "*", optional = true }
-azure-mgmt-loganalytics = { version = "*", optional = true }
+azure-mgmt-loganalytics = { version = "13.0.0b7", optional = true } # using beta release
 azure-mgmt-resource = { version = "*", optional = true }
 davidkhala-utils = "*"
 

@@ -8,7 +8,7 @@ from davidkhala.azure.ci import credentials
 from davidkhala.azure.monitor.dce import DCE
 from davidkhala.azure.monitor.dcr import DCR
 from davidkhala.azure.monitor.ingestion import Ingestion
-from davidkhala.azure.monitor.log import AnalyticsWorkspace
+from davidkhala.azure.monitor.log import AnalyticsWorkspace, AnalyticsTable
 from davidkhala.azure.monitor.monitor import Management as MonitorManagement
 
 credential = credentials()
@@ -26,6 +26,9 @@ class LogAnalyticsTestCase(unittest.TestCase):
 
     def test_workspace_get(self):
         r = self.management.get(rg, self.name)
+        tableOps = AnalyticsTable(r)
+        for table in tableOps.list(no_system=True):
+            print(table)
         return r
 
 
@@ -33,6 +36,7 @@ class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
     workspace = management.workspace
     name = 'workspace'
+
     @classmethod
     def setUpClass(cls):
         provision = cls.workspace.create(rg, cls.name)
@@ -51,10 +55,11 @@ class MonitorTestCase(unittest.TestCase):
         dcr = r.default_dcr(self.management.client)
 
         # Permission denied on managed DCR
+
     @classmethod
     def tearDownClass(cls):
-        remain = cls.workspace.delete(rg, cls.name)
-        print('remain', remain)
+        cls.workspace.delete(rg, cls.name)
+
 
 monitorManage = MonitorManagement(credential, subscription_id)
 
@@ -68,6 +73,7 @@ class DCRTestCase(unittest.TestCase):
             print(dcr_item)
 
     def test_dcr_create(self):
+        self.dcr.delete(rg, self.name)
         dce = DCETestCase().test_dce_get()
 
         workspace = LogAnalyticsTestCase().test_workspace_get()
@@ -75,7 +81,7 @@ class DCRTestCase(unittest.TestCase):
             'batch_id': KnownColumnDefinitionType.INT
         }
         from davidkhala.azure.monitor.dcr import Factory
-        builder = Factory(dce.resource_group_name, 'dcr')
+        builder = Factory(dce.resource_group_name, self.name)
         builder.with_DataCollectionEndpoint(dce)
         builder.with_LogAnalyticsTable(
             'foreachBatch',

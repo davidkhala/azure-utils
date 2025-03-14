@@ -53,10 +53,13 @@ class DCR:
     def get(self, resource_group_name: str, name: str) -> Resource:
         r = self.data_collection_rules.get(resource_group_name, name)
         return DCR.Resource(*[None] * 7).from_resource(r)
-
+    def get_by_id(self, resource_id: str):
+        words = resource_id.split("/")
+        return self.get(words[4], words[-1])
     def list(self) -> Iterable[DataCollectionRuleResource]:
         return self.data_collection_rules.list_by_subscription()
-
+    def delete(self, resource_group_name: str, name: str):
+        return self.data_collection_rules.delete(resource_group_name, name)
 
 from davidkhala.azure.monitor.log import AnalyticsWorkspace
 from davidkhala.azure.monitor.dce import DCE

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Iterator
 
 from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 from azure.mgmt.loganalytics.models import Table, Workspace as NativeWorkspace
@@ -19,13 +19,9 @@ class AnalyticsWorkspace:
     @dataclass
     class Resource(AbstractResource):
 
-        def __init__(self, client: LogAnalyticsManagementClient):
+        def __init__(self, operations: TablesOperations):
             super().__init__(*[None] * 5)
-            self.client = client
-
-        @property
-        def tables(self):
-            return AnalyticsTable(self.client.tables, self)
+            self.operations = operations
 
         def from_resource(self, resource: NativeWorkspace):
             super().from_resource(resource)
@@ -37,7 +33,7 @@ class AnalyticsWorkspace:
         return AnalyticsWorkspace.Resource(self.tables).from_resource(promise.result())
 
     @property
-    def tables(self):
+    def tables(self) -> TablesOperations:
         return self.client.tables
 
     def delete(self, resource_group_name: str, name: str, force=True):
@@ -57,14 +53,18 @@ class AnalyticsWorkspace:
 
 
 class AnalyticsTable:
-    def __init__(self, tables: TablesOperations, workspace: AnalyticsWorkspace.Resource):
-        self.tables = tables
+    def __init__(self, workspace: AnalyticsWorkspace.Resource):
+        self.tables = workspace.operations
         self.workspace = workspace.name
         self.resource_group_name = workspace.resource_group_name
 
-    def list(self):
-        return self.tables.list_by_workspace(self.resource_group_name, self.workspace)
+    def list(self, *, no_system: bool = False) -> Iterator[Table]:
+        for table in self.tables.list_by_workspace(self.resource_group_name, self.workspace):
+            if no_system and not str(table.name).endswith('_CL'):
+                continue
+            yield table
 
     def create(self, table_name: str) -> Table:
         parameters = Table()
-        return self.tables.create(self.resource_group_name, self.workspace, table_name, parameters)
+        promise = self.tables.begin_create_or_update(self.resource_group_name, self.workspace, table_name, parameters)
+        return promise.result()

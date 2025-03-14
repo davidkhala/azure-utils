@@ -53,11 +53,6 @@ class CredentialsCase(unittest.TestCase):
         r = CliCredential.current()
         print(r)
 
-class SubscriptionTestCase(unittest.TestCase):
-    def test_default(self):
-        auth = credentials()
-        sub = Subscription(auth)
-        print(sub.get_one())
 
 
 if __name__ == '__main__':

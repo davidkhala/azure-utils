@@ -49,10 +49,9 @@ class Workspace:
             return self
 
         def default_dcr(self, client: MonitorManagementClient):
-            words = self.data_collection_rule.split('/')
             from davidkhala.azure.monitor.dcr import DCR
             control = DCR(client.data_collection_rules)
-            got = control.get(words[4], words[-1])
+            got = control.get_by_id(self.data_collection_rule)
             assert got.stream_declarations is None
             return got
 
@@ -97,5 +96,3 @@ class Workspace:
         while r is not None:
             assert r.state == ProvisioningState.DELETING
             r = self.get(resource_group_name, name)
-            print(r)
-        return r
