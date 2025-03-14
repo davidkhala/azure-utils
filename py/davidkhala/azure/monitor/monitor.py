@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from time import sleep
 from typing import Iterable
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azure.mgmt.monitor import MonitorManagementClient
 from azure.mgmt.monitor.v2021_06_03_preview.models import AzureMonitorWorkspaceResource, ProvisioningState
 from azure.mgmt.monitor.v2021_06_03_preview.operations import AzureMonitorWorkspacesOperations
@@ -68,6 +67,7 @@ class Workspace:
         return self.azure_monitor_workspaces.list_by_subscription()
 
     def create(self, resource_group_name: str, name: str, location="East Asia") -> Resource:
+        self.wait_until_gone(resource_group_name, name)
         r = self.azure_monitor_workspaces.create(
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
@@ -90,9 +90,12 @@ class Workspace:
             if str(e) != "Operation returned an invalid status 'Accepted'":
                 raise e
 
-    def delete(self, resource_group_name: str, name: str):
-        self.delete_async(resource_group_name, name)
+    def wait_until_gone(self, resource_group_name: str, name: str):
         r = self.get(resource_group_name, name)
         while r is not None:
             assert r.state == ProvisioningState.DELETING
             r = self.get(resource_group_name, name)
+
+    def delete(self, resource_group_name: str, name: str):
+        self.delete_async(resource_group_name, name)
+        self.wait_until_gone(resource_group_name, name)
