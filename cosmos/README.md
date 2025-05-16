@@ -10,11 +10,14 @@ provides five APIs. **You must create a separate account for each API.**
 - Azure Table
 - Cassandra.
 
-## Connection or connectionless
-Connection
+## Connectivity modes: connectionless or not
+Direct mode
 > The Azure Cosmos DB documentation recommends that you [use a singleton Azure Cosmos DB client for the lifetime of your application](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips?tabs=trace-net-core#sdk-usage).
+- lower latency with fewer network hops
+- only supported on .NET and Java SDK
 
 
 Connectionless: gateway mode
 > Azure Cosmos DB requests are made over HTTPS/REST when you use gateway mode.
 - They're subjected to the connection limit(100 to 1000) per hostname or IP address.
+- supported on all language SDK
