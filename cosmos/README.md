@@ -8,4 +8,13 @@ provides five APIs. **You must create a separate account for each API.**
 - Gremlin for graph databases
 - MongoDB for document databases
 - Azure Table
-- Cassandra. 
+- Cassandra.
+
+## Connection or connectionless
+Connection
+> The Azure Cosmos DB documentation recommends that you [use a singleton Azure Cosmos DB client for the lifetime of your application](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/performance-tips?tabs=trace-net-core#sdk-usage).
+
+
+Connectionless: gateway mode
+> Azure Cosmos DB requests are made over HTTPS/REST when you use gateway mode.
+- They're subjected to the connection limit(100 to 1000) per hostname or IP address.
