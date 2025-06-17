@@ -1,8 +1,5 @@
 from dataclasses import dataclass
 from typing import Iterable
-from azure.mgmt.monitor.v2022_06_01.models import DataCollectionEndpointResource, DataCollectionEndpointNetworkAcls, \
-    KnownPublicNetworkAccessOptions
-from azure.mgmt.monitor.v2022_06_01.operations import DataCollectionEndpointsOperations
 
 from davidkhala.azure.monitor import AbstractResource
 
@@ -29,13 +26,12 @@ class DCE:
                 public_network_access=KnownPublicNetworkAccessOptions.ENABLED
             )
         )
-        return DCE.Resource(*[None]*7).from_resource(
+        return DCE.Resource(*[None] * 7).from_resource(
             self.data_collection_endpoints.create(resource_group_name, name, body)
         )
 
-    def get(self, resource_group_name, name)->Resource:
-
-        return DCE.Resource(*[None]*7).from_resource(
+    def get(self, resource_group_name, name) -> Resource:
+        return DCE.Resource(*[None] * 7).from_resource(
             self.data_collection_endpoints.get(resource_group_name, name)
         )
 

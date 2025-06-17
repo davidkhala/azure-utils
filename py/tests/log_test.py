@@ -1,7 +1,6 @@
 import os
 import unittest
 
-from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
 
 from davidkhala.azure.auth import from_service_principal
 from davidkhala.azure.ci import credentials
@@ -31,6 +30,10 @@ class LogAnalyticsTestCase(unittest.TestCase):
             print(table)
         return r
 
+class NewTestCase(unittest.TestCase):
+    management = MonitorManagement(credential, subscription_id)
+    def test_instance(self):
+        print(self.management)
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)

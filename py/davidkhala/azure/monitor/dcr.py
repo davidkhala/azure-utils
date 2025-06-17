@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, List, Iterable
 
-from azure.mgmt.monitor.v2022_06_01.models import StreamDeclaration, DataCollectionRuleResource, \
-    DataCollectionRuleDestinations, DataFlow, DataCollectionRuleDataSources, KnownColumnDefinitionType, \
-    ColumnDefinition, LogAnalyticsDestination
-from azure.mgmt.monitor.v2022_06_01.operations import DataCollectionRulesOperations
 
 from davidkhala.azure.monitor import AbstractResource
 

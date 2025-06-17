@@ -3,10 +3,8 @@ from typing import Iterable
 
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azure.mgmt.monitor import MonitorManagementClient
-from azure.mgmt.monitor.v2021_06_03_preview.models import AzureMonitorWorkspaceResource, ProvisioningState
-from azure.mgmt.monitor.v2021_06_03_preview.operations import AzureMonitorWorkspacesOperations
-from azure.mgmt.monitor.v2022_06_01.models import MonitoringAccountDestination
-
+from azure.mgmt.monitor.models import AzureMonitorWorkspaceResource, ProvisioningState
+from azure.mgmt.monitor.operations import AzureMonitorWorkspacesOperations
 from davidkhala.azure import TokenCredential
 from davidkhala.azure.monitor import AbstractResource
 
