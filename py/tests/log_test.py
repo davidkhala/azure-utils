@@ -1,12 +1,10 @@
 import os
 import unittest
 
+from azure.mgmt.loganalytics.models import ColumnTypeEnum
 
 from davidkhala.azure.auth import from_service_principal
 from davidkhala.azure.ci import credentials
-from davidkhala.azure.monitor.dce import DCE
-from davidkhala.azure.monitor.dcr import DCR
-from davidkhala.azure.monitor.ingestion import Ingestion
 from davidkhala.azure.monitor.log import AnalyticsWorkspace, AnalyticsTable
 from davidkhala.azure.monitor.monitor import Management as MonitorManagement
 
@@ -29,11 +27,6 @@ class LogAnalyticsTestCase(unittest.TestCase):
         for table in tableOps.list(no_system=True):
             print(table)
         return r
-
-class NewTestCase(unittest.TestCase):
-    management = MonitorManagement(credential, subscription_id)
-    def test_instance(self):
-        print(self.management)
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
@@ -71,6 +64,7 @@ monitorManage = MonitorManagement(credential, subscription_id)
 
 
 class DCRTestCase(unittest.TestCase):
+    from davidkhala.azure.monitor.dcr import DCR
     dcr = DCR(monitorManage.dcr)
     name = 'dcr'
 
@@ -84,7 +78,7 @@ class DCRTestCase(unittest.TestCase):
 
         workspace = LogAnalyticsTestCase().test_workspace_get()
         schema = {
-            'batch_id': KnownColumnDefinitionType.INT
+            'batch_id': ColumnTypeEnum.INT
         }
         from davidkhala.azure.monitor.dcr import Factory
         builder = Factory(dce.resource_group_name, self.name)
@@ -103,6 +97,7 @@ class DCRTestCase(unittest.TestCase):
 
 
 class DCETestCase(unittest.TestCase):
+    from davidkhala.azure.monitor.dce import DCE
     dce_operations = DCE(monitorManage.dce)
     dce_name = 'dce'
 
@@ -123,6 +118,8 @@ class DCETestCase(unittest.TestCase):
 
 
 class IngestionTestCase(unittest.TestCase):
+    from davidkhala.azure.monitor.ingestion import Ingestion
+    from davidkhala.azure.monitor.dce import DCE
     def test_ingestion(self):
         dcr = DCRTestCase().test_dcr_get()
         credential = from_service_principal(

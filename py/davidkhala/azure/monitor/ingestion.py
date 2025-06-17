@@ -1,7 +1,7 @@
 from typing import List
 
 from azure.identity import ClientSecretCredential
-from azure.mgmt.monitor.v2022_06_01.models import KnownColumnDefinitionType
+from azure.mgmt.loganalytics.models import ColumnTypeEnum
 from azure.monitor.ingestion import LogsIngestionClient
 
 from davidkhala.azure import TokenCredential
@@ -13,7 +13,7 @@ class Ingestion:
     logs: List[dict]
     stream_name: str
     dcr: DCR.Resource
-    schema: dict[str, KnownColumnDefinitionType | str]
+    schema: dict[str, ColumnTypeEnum | str]
 
     def __init__(self, credential: TokenCredential, dcr: DCR.Resource, end_point: str | None,
                  *,

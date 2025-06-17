@@ -52,12 +52,6 @@ class Workspace:
             assert got.stream_declarations is None
             return got
 
-        def as_destination(self) -> MonitoringAccountDestination:
-            return MonitoringAccountDestination(
-                account_resource_id=self.id,
-                name=self.name
-            )
-
     def __init__(self, azure_monitor_workspaces: AzureMonitorWorkspacesOperations):
         self.azure_monitor_workspaces = azure_monitor_workspaces
 
@@ -82,11 +76,7 @@ class Workspace:
             return None
 
     def delete_async(self, resource_group_name: str, name: str):
-        try:
-            self.azure_monitor_workspaces.delete(resource_group_name, name)
-        except HttpResponseError as e:
-            if str(e) != "Operation returned an invalid status 'Accepted'":
-                raise e
+        return self.azure_monitor_workspaces.begin_delete(resource_group_name, name)
 
     def wait_until_gone(self, resource_group_name: str, name: str):
         r = self.get(resource_group_name, name)
@@ -95,5 +85,5 @@ class Workspace:
             r = self.get(resource_group_name, name)
 
     def delete(self, resource_group_name: str, name: str):
-        self.delete_async(resource_group_name, name)
-        self.wait_until_gone(resource_group_name, name)
+        promise = self.delete_async(resource_group_name, name)
+        assert promise.result() is None

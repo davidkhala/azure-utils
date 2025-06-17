@@ -46,10 +46,8 @@ class AnalyticsWorkspace:
         promise.result()
 
     def get(self, resource_group_name, name) -> Resource:
-        return (
-            AnalyticsWorkspace.Resource(self.tables)
-            .from_resource(self.client.workspaces.get(resource_group_name, name))
-        )
+        resource = self.client.workspaces.get(resource_group_name, name)
+        return AnalyticsWorkspace.Resource(self.tables).from_resource(resource)
 
 
 class AnalyticsTable:
