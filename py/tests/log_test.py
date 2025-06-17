@@ -41,7 +41,10 @@ class MonitorTestCase(unittest.TestCase):
     def setUpClass(cls):
         provision = cls.workspace.create(rg, cls.name)
         print('provisioned', provision)
-
+    def test_workspace_create(self):
+        name = 'test'
+        self.workspace.create(rg, name)
+        self.workspace.delete(rg, name)
     def test_workspace_get(self):
         r = self.workspace.get(rg, self.name)
         self.assertIsNotNone(r)

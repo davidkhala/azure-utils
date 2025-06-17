@@ -1,26 +1,32 @@
-[tool.poetry]
+[project]
 name = "davidkhala.azure"
 version = "0.0.4"
 description = "@davidkhala/azure-utils"
-authors = ["David Liu <david-khala@hotmail.com>"]
+authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
+requires-python = "~=3.10"
 readme = "README.md"
-packages = [{ include = "davidkhala" }]
+dependencies = [
+    "azure-identity",
+    "davidkhala-utils",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10, <3.14"
-azure-identity = "*"
-azure-monitor-ingestion = { version = "*", optional = true }
-azure-mgmt-monitor = { version = "*", optional = true }
-azure-mgmt-loganalytics = { version = "13.0.0b7", optional = true } # using beta release
-azure-mgmt-resource = { version = "*", optional = true }
-davidkhala-utils = "*"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-
-[tool.poetry.extras]
-log = ["azure-monitor-ingestion", "azure-mgmt-monitor", "azure-mgmt-loganalytics"]
+[project.optional-dependencies]
+log = [
+    "azure-monitor-ingestion",
+    "azure-mgmt-monitor==7.0.0b2",
+    "azure-mgmt-loganalytics==13.0.0b7",
+]
 tenant = ["azure-mgmt-resource"]
+
+[dependency-groups]
+dev = ["pytest"]
+
+[tool.hatch.build.targets.sdist]
+include = ["davidkhala"]
+
+[tool.hatch.build.targets.wheel]
+include = ["davidkhala"]
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
