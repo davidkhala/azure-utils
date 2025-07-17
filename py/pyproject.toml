@@ -14,7 +14,10 @@ dependencies = [
 log = [
     "azure-monitor-ingestion",
     "azure-mgmt-monitor==7.0.0b2",
-    "azure-mgmt-loganalytics==13.0.0b7",
+    "azure-mgmt-loganalytics==13.0.0b4",
+]
+extension = [
+    "azure-cli==2.75"
 ]
 tenant = ["azure-mgmt-resource"]
 
@@ -26,7 +29,7 @@ include = ["davidkhala"]
 
 [tool.hatch.build.targets.wheel]
 include = ["davidkhala"]
-
+packages = ["azext_myextension"] # TODO
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

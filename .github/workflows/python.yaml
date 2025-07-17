@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-      - uses: davidkhala/poetry-buildpack@main
+      - uses: davidkhala/uv-buildpack@main
         with:
           working-directory: py
           test-entry-point: pytest
