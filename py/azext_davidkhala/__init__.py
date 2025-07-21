@@ -1,18 +1,15 @@
 # TODO ugly azure extension
-from azure.cli.core import AzCommandsLoader
+
+from davidkhala.azure.cli.ext import COMMAND_LOADER_CLS as AbstractLoader
 
 
-def say_hello():
+def say_hello(_):
+    print(_)
     print("Hello from your custom Azure CLI extension!")
 
-class COMMAND_LOADER_CLS(AzCommandsLoader):
-    def __init__(self, cli_ctx):
-        from azure.cli.core.commands import CliCommandType
-        super().__init__(cli_ctx=cli_ctx,custom_command_type=CliCommandType(operations_tmpl=__package__+"#{}"))
 
+class COMMAND_LOADER_CLS(AbstractLoader):
     def load_command_table(self, args):
-        with self.command_group('hello') as g:
-            g.custom_command('world', 'say_hello')
+        self.set_command('hello world', say_hello)
+
         return self.command_table
-
-
