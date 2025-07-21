@@ -1,5 +1,5 @@
 # Vault
-
+[Key types, algorithms, and operations](https://docs.microsoft.com/en-us/azure/key-vault/keys/about-keys-details)
 ## Permission
 Please ensure your key vault is using modern Azure RBAC `Access control (IAM)` instead of `Key Vault access policy`
 - Azure portal page of a key vault > **Settings / Access configuration** > **Permission model**

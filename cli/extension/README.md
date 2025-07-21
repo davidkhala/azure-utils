@@ -11,3 +11,6 @@ Please note that for different OS, available extensions are different.
 
 - `az interactive`: interactive mode
   - change `az` behavior to IDE. e.g. autocompletion, command descriptions
+- `az vm extension set ...` 用来安装、配置虚拟机拓展
+- `az vm extension set --name customScript --publisher Microsoft.Azure.Extensions`
+  - Custom Script Extension: An easy way to download and run scripts on your Azure VMs
