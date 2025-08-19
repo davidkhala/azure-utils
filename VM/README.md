@@ -27,7 +27,8 @@ fault domain
 - By default, Azure splits your VMs across up to 3 fault domains
 
 
-# Azure Virtual Desktop
+# Azure Virtual Desktop (AVD)
 A desktop and application virtualization service
 - cloud-hosted version of Windows
 - Exclusively offers **Windows (desktop) Enterprise multi-session**
+- The tech foundation of [Windows 365](https://github.com/davidkhala/windows-utils/wiki/Windows-on-public-cloud#windows-365)
