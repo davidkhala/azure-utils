@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.monitor import MonitorManagementClient
 from azure.mgmt.monitor.models import AzureMonitorWorkspaceResource, ProvisioningState
 from azure.mgmt.monitor.operations import AzureMonitorWorkspacesOperations
+
 from davidkhala.azure import TokenCredential
 from davidkhala.azure.monitor import AbstractResource
 

@@ -118,9 +118,10 @@ class DCETestCase(unittest.TestCase):
 
 
 class IngestionTestCase(unittest.TestCase):
-    from davidkhala.azure.monitor.ingestion import Ingestion
-    from davidkhala.azure.monitor.dce import DCE
+
     def test_ingestion(self):
+        from davidkhala.azure.monitor.ingestion import Ingestion
+        from davidkhala.azure.monitor.dce import DCE
         dcr = DCRTestCase().test_dcr_get()
         credential = from_service_principal(
             tenant_id=os.environ.get('TENANT_ID'),

@@ -1,9 +1,9 @@
 [project]
 name = "davidkhala.azure"
-version = "0.0.4"
+version = "0.0.5"
 description = "@davidkhala/azure-utils"
 authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
-requires-python = "~=3.10"
+requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
     "azure-identity",
@@ -13,8 +13,8 @@ dependencies = [
 [project.optional-dependencies]
 log = [
     "azure-monitor-ingestion",
-    "azure-mgmt-monitor==7.0.0b2",
-    "azure-mgmt-loganalytics==13.0.0b4",
+    "azure-mgmt-monitor>=7.0.0b3",
+    "azure-mgmt-loganalytics>=13.0.0b4",
 ]
 extension = [
     "azure-cli==2.75"

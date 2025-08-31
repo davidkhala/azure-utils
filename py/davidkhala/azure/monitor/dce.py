@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from typing import Iterable
 
+from azure.mgmt.monitor.models import (
+    DataCollectionEndpointResource, DataCollectionEndpointNetworkAcls, KnownPublicNetworkAccessOptions
+)
+from azure.mgmt.monitor.operations import DataCollectionEndpointsOperations
+
 from davidkhala.azure.monitor import AbstractResource
 
 
