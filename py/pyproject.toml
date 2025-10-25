@@ -20,6 +20,7 @@ extension = [
     "azure-cli==2.75"
 ]
 tenant = ["azure-mgmt-resource"]
+ai = ["azure-ai-agents"]
 
 [dependency-groups]
 dev = ["pytest","pip"]
