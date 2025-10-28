@@ -4,7 +4,8 @@
 
 - [Doc: Feature enablement](https://docs.databricks.com/en/admin/workspace-settings/serverless.html)
 - how-to enable: go to [Acount Console](https://accounts.azuredatabricks.net) > `Settings` in left panel > **Feature enablement** > enable **Serverless compute for Workflows, Notebooks, and Delta Live tables**
-
+- If you workspace is created at `Trial` Pricing Tier, you cannot create a serverless SQL warehouse and has low priority to gain compute resource for SQL warehouse Pro (blocking resume and provision)
+  - Solution: recreate workspace with `Premium` Pricing Tier
 ## network
 > serverless compute resources do not have public IP addresses.
 
