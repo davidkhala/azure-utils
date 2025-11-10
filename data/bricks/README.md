@@ -12,4 +12,4 @@ You cannot move Azure Databricks across Resource Group
 - Immutable: it is not modifiable.
   - To alter permissions on the managed resource group you need to **open a support ticket**
 - The NAT gateway inside it is billable and will cost your $33.5 each month silently
-  - This gateway provision is due to opt-in "Deploy Azure Databricks workspace with Secure Cluster Connectivity (No Public IP)"
+  - This gateway provision is due to opt-in "Deploy Azure Databricks workspace with Secure Cluster Connectivity (No Public IP)" (enableNoPublicIp=true)
