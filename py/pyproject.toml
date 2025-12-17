@@ -20,10 +20,13 @@ extension = [
     "azure-cli==2.75"
 ]
 tenant = ["azure-mgmt-resource"]
-ai = ["azure-ai-agents"]
+ai = [
+    "azure-ai-agents",
+    "azure-ai-projects>=2.0.0b1", "openai" # for get_openai_client()
+]
 
 [dependency-groups]
-dev = ["pytest","pip"]
+dev = ["pytest", "pip"]
 [tool.uv]
 prerelease = "allow"
 
