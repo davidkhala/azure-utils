@@ -8,7 +8,7 @@ from azure.identity import (
     EnvironmentCredential, ManagedIdentityCredential, SharedTokenCacheCredential,
     AzurePowerShellCredential, AzureDeveloperCliCredential, ClientSecretCredential,
 )
-from davidkhala.syntax import is_windows, is_mac, is_linux
+from davidkhala.utils.syntax.env import is_windows, is_mac, is_linux
 
 from davidkhala.azure import TokenCredential, default_scopes
 

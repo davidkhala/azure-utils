@@ -21,6 +21,10 @@ class ProjectTestcase(unittest.TestCase):
         self.project.as_chat("gpt-4o", instruction, agent_name='new-foundry-agent')
         response = self.project.chat(prompt)
         print(f"Response output: {response.output_text}")
+    def test_direct_chat(self):
+        self.project.as_chat('gpt-4o', agent_name=None)
+        response = self.project.chat('Tell me a one line story')
+        print(f"Response output: {response.output_text}")
     def test_agents(self):
         agents = self.project.agents
         for agent in agents:
