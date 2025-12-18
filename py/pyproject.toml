@@ -1,7 +1,7 @@
 [project]
 name = "davidkhala.azure"
-version = "0.0.5"
-description = "@davidkhala/azure-utils"
+version = "0.0.6"
+description = "Lightweight Azure utilities providing simplified interface"
 authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -9,6 +9,8 @@ dependencies = [
     "azure-identity",
     "davidkhala-utils",
 ]
+[project.urls]
+Source = "https://github.com/davidkhala/azure-utils/tree/main/py"
 
 [project.optional-dependencies]
 log = [
