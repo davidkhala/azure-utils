@@ -1,6 +1,6 @@
 [project]
 name = "davidkhala.azure"
-version = "0.0.6"
+version = "0.0.7"
 description = "Lightweight Azure utilities providing simplified interface"
 authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
 requires-python = ">=3.10"
@@ -18,9 +18,6 @@ log = [
     "azure-mgmt-monitor>=7.0.0b3",
     "azure-mgmt-loganalytics>=13.0.0b4",
 ]
-extension = [
-    "azure-cli==2.75"
-]
 tenant = ["azure-mgmt-resource"]
 ai = [
     "azure-ai-agents",
@@ -34,9 +31,7 @@ prerelease = "allow"
 
 [tool.hatch.build.targets.sdist]
 include = ["davidkhala"]
-packages = ["azext_davidkhala"]
 [tool.hatch.build.targets.wheel]
-packages = ["azext_davidkhala"]
 include = ["davidkhala"]
 [build-system]
 requires = ["hatchling"]

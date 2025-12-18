@@ -8,4 +8,5 @@ class SubscriptionTestCase(unittest.TestCase):
     def test_default(self):
         auth = credentials()
         sub = Subscription(auth)
-        print(sub.get_one())
+        one = sub.get_one()
+        print(type(one))

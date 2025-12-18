@@ -22,11 +22,12 @@ class LogAnalyticsTestCase(unittest.TestCase):
             print(w)
 
     def test_workspace_get(self):
-        r = self.management.get(rg, self.name)
+        r = self.get_workspace()
         tableOps = AnalyticsTable(r)
         for table in tableOps.list(no_system=True):
             print(table)
-        return r
+    def get_workspace(self):
+        return self.management.get(rg, self.name)
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
@@ -74,9 +75,9 @@ class DCRTestCase(unittest.TestCase):
 
     def test_dcr_create(self):
         self.dcr.delete(rg, self.name)
-        dce = DCETestCase().test_dce_get()
+        dce = DCETestCase().get_dce()
 
-        workspace = LogAnalyticsTestCase().test_workspace_get()
+        workspace = LogAnalyticsTestCase().get_workspace()
         schema = {
             'batch_id': ColumnTypeEnum.INT
         }
@@ -90,7 +91,7 @@ class DCRTestCase(unittest.TestCase):
         )
         builder.build(monitorManage.dcr)
 
-    def test_dcr_get(self):
+    def get_dcr(self):
         r = self.dcr.get(rg, self.name)
         print(r)
         return r
@@ -105,7 +106,7 @@ class DCETestCase(unittest.TestCase):
         for dce in self.dce_operations.list():
             print(dce)
 
-    def test_dce_get(self):
+    def get_dce(self):
         return self.dce_operations.get(rg, self.dce_name)
 
     def test_dce_create(self):
@@ -122,7 +123,7 @@ class IngestionTestCase(unittest.TestCase):
     def test_ingestion(self):
         from davidkhala.azure.monitor.ingestion import Ingestion
         from davidkhala.azure.monitor.dce import DCE
-        dcr = DCRTestCase().test_dcr_get()
+        dcr = DCRTestCase().get_dcr()
         credential = from_service_principal(
             tenant_id=os.environ.get('TENANT_ID'),
             client_id=os.environ.get('CLIENT_ID'),

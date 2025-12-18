@@ -1,0 +1,27 @@
+[project]
+name = "davidkhala.azext"
+version = "0.0.0"
+description = "test azure extension"
+authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
+requires-python = ">=3.10"
+readme = "README.md"
+
+dependencies = [
+    "azure-cli==2.75"
+
+]
+
+[project.urls]
+Source = "https://github.com/davidkhala/azure-utils/tree/main/cli/extension/py"
+
+
+[dependency-groups]
+dev = ["pytest"]
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["azext_davidkhala"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

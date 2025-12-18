@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from time import sleep
 from typing import Iterable
 
 from azure.core.exceptions import ResourceNotFoundError
@@ -60,7 +61,16 @@ class Workspace:
         return self.azure_monitor_workspaces.list_by_subscription()
 
     def create(self, resource_group_name: str, name: str, location="East Asia") -> Resource:
-        self.wait_until_gone(resource_group_name, name)
+        r = self.get(resource_group_name, name)
+        if r:
+            if r.state == ProvisioningState.SUCCEEDED:
+                return r
+            else:
+                while r is not None:
+                    assert r.state == ProvisioningState.DELETING, f"expected {ProvisioningState.DELETING}, but got {r.state}"
+                    sleep(1)
+                    r = self.get(resource_group_name, name)
+
         r = self.azure_monitor_workspaces.create(
             resource_group_name, name,
             AzureMonitorWorkspaceResource(location=location)
@@ -82,7 +92,7 @@ class Workspace:
     def wait_until_gone(self, resource_group_name: str, name: str):
         r = self.get(resource_group_name, name)
         while r is not None:
-            assert r.state == ProvisioningState.DELETING
+            assert r.state == ProvisioningState.DELETING, f"expected {ProvisioningState.DELETING}, but got {r.state}"
             r = self.get(resource_group_name, name)
 
     def delete(self, resource_group_name: str, name: str):
