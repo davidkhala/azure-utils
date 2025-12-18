@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from time import sleep
 from typing import Iterable
 
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, ResourceExistsError, HttpResponseError
 from azure.mgmt.monitor import MonitorManagementClient
 from azure.mgmt.monitor.models import AzureMonitorWorkspaceResource, ProvisioningState
 from azure.mgmt.monitor.operations import AzureMonitorWorkspacesOperations
@@ -41,6 +41,7 @@ class Workspace:
 
         def from_resource(self, resource: AzureMonitorWorkspaceResource):
             super().from_resource(resource)
+            assert resource.default_ingestion_settings is not None, f"{resource} missing .default_ingestion_settings"
             self.data_collection_rule = resource.default_ingestion_settings.data_collection_rule_resource_id
             self.data_collection_endpoint = resource.default_ingestion_settings.data_collection_endpoint_resource_id
             self.state = resource.provisioning_state
@@ -48,6 +49,12 @@ class Workspace:
             return self
 
         def default_dcr(self, client: MonitorManagementClient):
+            """
+            The managed DCR.
+            Permission denied from any change attempt
+            :param client:
+            :return: DCR.Resource
+            """
             from davidkhala.azure.monitor.dcr import DCR
             control = DCR(client.data_collection_rules)
             got = control.get_by_id(self.data_collection_rule)
@@ -71,10 +78,28 @@ class Workspace:
                     sleep(1)
                     r = self.get(resource_group_name, name)
 
-        r = self.azure_monitor_workspaces.create(
-            resource_group_name, name,
-            AzureMonitorWorkspaceResource(location=location)
-        )
+        while True:
+
+            try:
+                r = self.azure_monitor_workspaces.create(
+                    resource_group_name, name,
+                    AzureMonitorWorkspaceResource(location=location)
+                )
+                break
+            except ResourceExistsError as e:
+                if e.message in [
+                    "There is a Create operation currently running on this Monitoring account",
+                    "Monitoring account has been modified before operation completed"
+                ]:
+                    sleep(1)
+                else:
+                    raise
+            except HttpResponseError as e:
+                if 'Code: InconsistentState' in str(e):
+                    sleep(30)
+                else:
+                    raise
+
         wrapped = Workspace.Resource(*[None] * 8).from_resource(r)
         assert wrapped.state == ProvisioningState.SUCCEEDED
         return wrapped

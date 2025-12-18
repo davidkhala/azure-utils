@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Any
 
 from azure.core.credentials import TokenCredential as AzTokenCredential, AccessToken
 from azure.identity._internal.get_token_mixin import GetTokenMixin
@@ -15,8 +15,8 @@ class TokenCredential(AzTokenCredential):
     def get_token(
             self,
             *scopes: str,
-            claims: Optional[str] = None,
-            tenant_id: Optional[str] = None,
+            claims: str|None = None,
+            tenant_id: str|None = None,
             enable_cae: bool = False,
             **kwargs: Any,
     ) -> AccessToken:

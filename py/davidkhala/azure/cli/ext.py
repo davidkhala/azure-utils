@@ -1,4 +1,4 @@
-from typing import Callable, TypedDict, Optional
+from typing import Callable, TypedDict
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand

@@ -1,4 +1,6 @@
 import os
+import random
+import time
 import unittest
 
 from azure.mgmt.loganalytics.models import ColumnTypeEnum
@@ -26,39 +28,25 @@ class LogAnalyticsTestCase(unittest.TestCase):
         tableOps = AnalyticsTable(r)
         for table in tableOps.list(no_system=True):
             print(table)
+
     def get_workspace(self):
         return self.management.get(rg, self.name)
+
 
 class MonitorTestCase(unittest.TestCase):
     management = MonitorManagement(credential, subscription_id)
     workspace = management.workspace
-    name = 'workspace'
 
-    @classmethod
-    def setUpClass(cls):
-        provision = cls.workspace.create(rg, cls.name)
-        print('provisioned', provision)
     def test_workspace_create(self):
-        name = 'test'
+        name = f"test-ws-{random.randint(1000,2000)}"
         self.workspace.create(rg, name)
-        self.workspace.delete(rg, name)
-    def test_workspace_get(self):
-        r = self.workspace.get(rg, self.name)
+        r = self.workspace.get(rg, name)
         self.assertIsNotNone(r)
+        self.workspace.delete(rg, name)
 
     def test_workspace_list(self):
         for w in self.workspace.list():
             print(w)
-
-    def test_dcr_populate(self):
-        r = self.workspace.get(rg, self.name)
-        dcr = r.default_dcr(self.management.client)
-
-        # Permission denied on managed DCR
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.workspace.delete(rg, cls.name)
 
 
 monitorManage = MonitorManagement(credential, subscription_id)
@@ -110,7 +98,8 @@ class DCETestCase(unittest.TestCase):
         return self.dce_operations.get(rg, self.dce_name)
 
     def test_dce_create(self):
-        name = 'dce2'
+        name = f"dce-{int(time.time())}"
+        print(name)
         r = self.dce_operations.create(rg, name)
         print(r)
         self.assertTrue(r.logs_ingestion.startswith(f"https://{name}-"))
