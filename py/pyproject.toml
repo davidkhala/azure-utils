@@ -23,9 +23,12 @@ ai = [
     "azure-ai-agents",
     "azure-ai-projects>=2.0.0b1", "openai" # for get_openai_client()
 ]
+storage = ["azure-storage-blob", "azure-storage-file-datalake"]
 
 [dependency-groups]
-dev = ["pytest", "pip"]
+dev = ["pytest"]
+dev-storage = ["davidkhala-data-integration[pandas,arrow]>=0.0.2", "adlfs"]
+
 [tool.uv]
 prerelease = "allow"
 

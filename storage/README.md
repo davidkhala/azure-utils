@@ -16,6 +16,10 @@ Azure Storage
 ![Azure Storage services](storage.png)
 # Storage Account
 
+**Security + networking** > **Access keys**
+- 永远只有 两个 key, `key1`, `key2` 
+  - cannot be renamed 
+  - you can only `Rotate key` 
 
 ## Azure Blob Storage
 - aka. blobs

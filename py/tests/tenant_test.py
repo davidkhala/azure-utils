@@ -10,3 +10,6 @@ class SubscriptionTestCase(unittest.TestCase):
         sub = Subscription(auth)
         one = sub.get_one()
         print(type(one))
+
+if __name__ == '__main__':
+    unittest.main()
