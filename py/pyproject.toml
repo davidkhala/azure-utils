@@ -27,7 +27,7 @@ storage = ["azure-storage-blob", "azure-storage-file-datalake"]
 
 [dependency-groups]
 dev = ["pytest"]
-dev-storage = ["davidkhala-data-integration[pandas,arrow]>=0.0.2", "adlfs"]
+dev-storage = ["davidkhala-data-integration[pandas,arrow]", "adlfs"]
 
 [tool.uv]
 prerelease = "allow"

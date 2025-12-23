@@ -1,5 +1,6 @@
 # https://github.com/fsspec/adlfs
 from adlfs import AzureBlobFileSystem
+from azure.core.exceptions import ClientAuthenticationError
 
 
 class FS:
@@ -14,13 +15,9 @@ class FS:
             containers = self.blob_fs.ls("")
             assert isinstance(containers, list)
             return True
-        except:
-            return False
-
-    def fromPandas(self, df, container: str, blob_path: str):
-        from davidkhala.data.integration.to.arrow import fromPandas, bytesFrom
-        table = fromPandas(df)
-        _bytes = bytesFrom(table)
-
-        with self.blob_fs.open(f"{container}/{blob_path}", "wb") as f:
-            f.write(_bytes)
+        except ClientAuthenticationError as e:
+            if (
+                    e.status_code == 403 and
+                    e.reason == 'Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.'
+            ): return False
+            raise e

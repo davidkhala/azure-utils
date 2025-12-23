@@ -20,6 +20,7 @@ Azure Storage
 - 永远只有 两个 key, `key1`, `key2` 
   - cannot be renamed 
   - you can only `Rotate key` 
+  - much faster than using Entra identity credential to authN.
 
 ## Azure Blob Storage
 - aka. blobs
