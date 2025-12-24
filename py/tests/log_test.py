@@ -62,7 +62,8 @@ class DCRTestCase(unittest.TestCase):
             print(dcr_item)
 
     def test_dcr_create(self):
-        self.dcr.delete(rg, self.name)
+
+        name = f"dcr-{random.randint(1000,2000)}"
         dce = DCETestCase().get_dce()
 
         workspace = LogAnalyticsTestCase().get_workspace()
@@ -70,7 +71,7 @@ class DCRTestCase(unittest.TestCase):
             'batch_id': ColumnTypeEnum.INT
         }
         from davidkhala.azure.monitor.dcr import Factory
-        builder = Factory(dce.resource_group_name, self.name)
+        builder = Factory(dce.resource_group_name, name)
         builder.with_DataCollectionEndpoint(dce)
         builder.with_LogAnalyticsTable(
             'foreachBatch',
@@ -78,6 +79,7 @@ class DCRTestCase(unittest.TestCase):
             workspace
         )
         builder.build(monitorManage.dcr)
+        self.dcr.delete(rg, name)
 
     def get_dcr(self):
         r = self.dcr.get(rg, self.name)
