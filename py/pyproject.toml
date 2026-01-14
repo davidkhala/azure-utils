@@ -23,6 +23,9 @@ ai = [
     "azure-ai-agents",
     "azure-ai-projects>=2.0.0b1", "openai" # for get_openai_client()
 ]
+form = [
+    "azure-ai-documentintelligence"
+]
 storage = ["azure-storage-blob", "azure-storage-file-datalake"]
 
 [dependency-groups]

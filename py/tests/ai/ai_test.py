@@ -12,7 +12,7 @@ credential = credentials()
 
 class ProjectTestcase(unittest.TestCase):
     def setUp(self):
-        from davidkhala.azure.ai import Project
+        from davidkhala.azure.ai.project import Project
         self.project = Project(foundry_id, project, credential)
 
     def test_chat(self):
@@ -56,7 +56,6 @@ class AgentTestCase(unittest.TestCase):
         messages = self.client.get_messages(run)
         for m in messages:
             print(m.text_messages)
-
 
 if __name__ == '__main__':
     unittest.main()
