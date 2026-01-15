@@ -15,8 +15,9 @@ class BlobTest(unittest.TestCase):
         self.assertTrue(self.service.connect())
     def test_upload(self):
         df = DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
-        from davidkhala.data.integration.to.arrow import fromPandas, bytesFrom
-        table = fromPandas(df)
+        from davidkhala.data.integration.source.pandas import toArrow
+        from davidkhala.data.integration.sink.arrow import bytesFrom
+        table = toArrow(df)
         _bytes = bytesFrom(table)
         container = 'data'
         blob_path = 'test.parquet'

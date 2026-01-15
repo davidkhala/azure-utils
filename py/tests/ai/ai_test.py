@@ -2,7 +2,8 @@ import os
 import unittest
 
 from azure.ai.agents.models import RunStatus
-
+from davidkhala.azure.ai.project import Project
+from davidkhala.azure.ai.agent import Client
 from davidkhala.azure.ci import credentials
 
 foundry_id = 'ai-japanest'
@@ -12,7 +13,7 @@ credential = credentials()
 
 class ProjectTestcase(unittest.TestCase):
     def setUp(self):
-        from davidkhala.azure.ai.project import Project
+
         self.project = Project(foundry_id, project, credential)
 
     def test_chat(self):
@@ -20,11 +21,11 @@ class ProjectTestcase(unittest.TestCase):
         prompt = 'Tell me a one line story'
         self.project.as_chat("gpt-4o", instruction, agent_name='new-foundry-agent')
         response = self.project.chat(prompt)
-        print(f"Response output: {response.output_text}")
+        print(response.output_text)
     def test_direct_chat(self):
         self.project.as_chat('gpt-4o', agent_name=None)
         response = self.project.chat('Tell me a one line story')
-        print(f"Response output: {response.output_text}")
+        print(response.output_text)
     def test_agents(self):
         agents = self.project.agents
         for agent in agents:
@@ -33,7 +34,7 @@ class ProjectTestcase(unittest.TestCase):
 
 class AgentTestCase(unittest.TestCase):
     def setUp(self):
-        from davidkhala.azure.ai.agent import Client
+
         self.client = Client(foundry_id, project, credential)
 
     def test_bing_tools(self):

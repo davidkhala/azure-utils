@@ -1,9 +1,9 @@
 [project]
 name = "davidkhala.azure"
-version = "0.0.8"
+version = "0.0.9"
 description = "Lightweight Azure utilities providing simplified interface"
 authors = [{ name = "David Liu", email = "david-khala@hotmail.com" }]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 readme = "README.md"
 dependencies = [
     "azure-identity",
@@ -21,12 +21,12 @@ log = [
 tenant = ["azure-mgmt-resource"]
 ai = [
     "azure-ai-agents",
-    "azure-ai-projects>=2.0.0b1", "openai" # for get_openai_client()
+    "azure-ai-projects==2.0.0b3", "openai" # for get_openai_client()
 ]
 form = [
     "azure-ai-documentintelligence"
 ]
-storage = ["azure-storage-blob", "azure-storage-file-datalake"]
+storage = ["azure-storage-file-datalake"]
 
 [dependency-groups]
 dev = ["pytest"]

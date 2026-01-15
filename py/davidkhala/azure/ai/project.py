@@ -1,8 +1,6 @@
 from azure.ai.agents.models import Agent
 from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import AgentObject
-from azure.ai.projects.models import AgentVersionObject
-from azure.ai.projects.models import PromptAgentDefinition
+from azure.ai.projects.models import PromptAgentDefinition, AgentDetails
 from openai import OpenAI
 from openai.types.responses.response import Response
 
@@ -15,10 +13,10 @@ class Project:
             endpoint=f"https://{foundry_id}.services.ai.azure.com/api/projects/{project}",
             credential=credential,
         )
-        self.agent: Agent = None
-        self.model: str = None
+        self.agent: Agent | None = None
+        self.model: str | None = None
 
-    def as_chat(self, model: str, sys_prompt: str = None, *, agent_name: str) -> AgentVersionObject:
+    def as_chat(self, model: str, sys_prompt: str = None, *, agent_name: str):
         if agent_name:
             self.agent = self.client.agents.create_version(
                 agent_name=agent_name,
@@ -31,8 +29,8 @@ class Project:
             self.model = model
 
     @property
-    def agents(self) -> list[AgentObject]:
-        return [*self.client.agents.list()]
+    def agents(self) -> list[AgentDetails]:
+        return list(self.client.agents.list())
 
     def chat(self, *user_prompt, **kwargs) -> Response:
         openai_client: OpenAI = self.client.get_openai_client()
