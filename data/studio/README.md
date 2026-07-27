@@ -1,4 +1,5 @@
-# [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/)
+# Deprecated: [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/)
+
 An Desktop App built by customization on VS Code
 - less advanced than [SSMS](https://github.com/davidkhala/database/blob/main/mssql/SSMS.md)
 
@@ -14,3 +15,7 @@ Open the import wizard
 
 ## table schema
 To change table schema, right click a table in CONNECTIONS view and select **Design**
+
+## History
+Azure Data Studio is officially retired as of February 28, 2026
+- [source](https://learn.microsoft.com/en-us/sql/tools/whats-happening-azure-data-studio?view=sql-server-ver17&tabs=dev)
