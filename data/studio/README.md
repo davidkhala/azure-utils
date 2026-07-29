@@ -19,3 +19,4 @@ To change table schema, right click a table in CONNECTIONS view and select **Des
 ## History
 Azure Data Studio is officially retired as of February 28, 2026
 - [source](https://learn.microsoft.com/en-us/sql/tools/whats-happening-azure-data-studio?view=sql-server-ver17&tabs=dev)
+- replaced by vs extension [SQL Server (mssql)](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql)
