@@ -9,3 +9,6 @@ Type of App:
 - User-Assigned Managed Identity
   - 无需管理 App Registration
   - 定义Bot 以什么身份访问 Azure 资源。
+## `Messaging endpoint`
+`Enable Streaming Endpoint`, 
+- The streaming protocol is websocket
